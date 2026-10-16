@@ -1310,8 +1310,8 @@
       var sec = document.getElementById('lab'), y = lockY;
       if (how === 'down' && sec) y = sec.getBoundingClientRect().bottom + window.pageYOffset - 70;
       if (how === 'up' && sec) y = Math.max(0, sec.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * .9);
-      try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); }
-      lastY = y;
+      if (how !== 'nav') { try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); } }
+      lastY = how === 'nav' ? window.pageYOffset : y;
       status('Ready');
     }
     var xBtn = document.getElementById('kapp-x'); if (xBtn) xBtn.addEventListener('click', function () { if (PWA) leaveApp(); else if (DESKTOP) window.close(); else if (document.fullscreenElement === kapp) document.exitFullscreen(); else release('close'); });
@@ -1328,7 +1328,16 @@
     window.addEventListener('wheel', userScrolled, { passive: true });
     window.addEventListener('keydown', function (e) { if (/^(ArrowDown|PageDown|End| )$/.test(e.key)) userScrolled(); });
     document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a[href*="#"]')) userUntil = 0; }, true);
-    window.addEventListener('hashchange', function () { userUntil = 0; });
+    window.addEventListener('hashchange', function () { userUntil = 0; if (kapp.classList.contains('is-takeover')) release('nav'); });
+    /* A link outside the app (the site's top menu, the logo, a footer link) while it's maximized: let the
+       page go first, then the link scrolls or opens as usual (16 Oct 2026, John: "when I use the navigation
+       on the top while the kpi tool is maximized it does not exit out"). Runs before the site's own link
+       handling, so the page is already unlocked when that scrolls. */
+    document.addEventListener('click', function (e) {
+      if (!kapp.classList.contains('is-takeover')) return;
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (a && !kapp.contains(a)) release('nav');
+    }, true);
 
     var sTick = false;
     window.addEventListener('scroll', function () {
