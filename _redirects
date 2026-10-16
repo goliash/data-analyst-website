@@ -6,3 +6,11 @@
 # The villager page was renamed on 16 Oct 2026. Keep the old address working.
 /data-analyst       /Animal-Crossing-Villager-Data-Reports  301
 /data-analyst.html  /Animal-Crossing-Villager-Data-Reports  301
+
+# Blog and RSS feed aliases
+/blog               /blog/                                  301
+/feed               /feed.xml                               301
+/rss                /feed.xml                               301
+/rss.xml            /feed.xml                               301
+/atom.xml           /feed.xml                               301
+

@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Unsubscribe — John Goliash</title>
+<title>Unsubscribe — John Goliash (Goliash)</title>
 <meta name="description" content="Stop emails from john.goliash.com. Enter your email address and I'll take you off the list.">
 <link rel="canonical" href="https://john.goliash.com/unsubscribe">
+<link rel="alternate" type="application/rss+xml" title="Goliash — Field Notes &amp; Writing" href="https://john.goliash.com/feed.xml">
 <meta name="author" content="John Goliash">
 <meta name="robots" content="index, follow, max-snippet:-1">
 <meta property="og:type" content="website">
@@ -89,7 +90,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNod
       <span class="wm">John Goliash</span>
     </a>
 
-    <button id="menu" class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">
+    <button id="menu" class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav">
       <span class="menu-ico" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="menu-label">Menu</span>
     </button>
@@ -140,12 +141,12 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNod
       <p>If you have a second, would you tell me why? It helps. You can skip this.</p>
       <fieldset>
         <legend>Why did you leave?</legend>
-        <label class="unsub-opt"><input type="radio" name="why" value="I only wanted one reply"> I only wanted one reply</label>
-        <label class="unsub-opt"><input type="radio" name="why" value="I didn't expect an automatic email"> I didn&rsquo;t expect an automatic email</label>
-        <label class="unsub-opt"><input type="radio" name="why" value="I don't remember contacting you"> I don&rsquo;t remember contacting you</label>
-        <label class="unsub-opt"><input type="radio" name="why" value="The emails aren't useful to me"> The emails aren&rsquo;t useful to me</label>
-        <label class="unsub-opt"><input type="radio" name="why" value="Privacy reasons"> Privacy reasons</label>
-        <label class="unsub-opt"><input type="radio" name="why" value="Something else"> Something else</label>
+        <label class="unsub-opt" for="why-1"><input type="radio" id="why-1" name="why" value="I only wanted one reply"> I only wanted one reply</label>
+        <label class="unsub-opt" for="why-2"><input type="radio" id="why-2" name="why" value="I didn't expect an automatic email"> I didn&rsquo;t expect an automatic email</label>
+        <label class="unsub-opt" for="why-3"><input type="radio" id="why-3" name="why" value="I don't remember contacting you"> I don&rsquo;t remember contacting you</label>
+        <label class="unsub-opt" for="why-4"><input type="radio" id="why-4" name="why" value="The emails aren't useful to me"> The emails aren&rsquo;t useful to me</label>
+        <label class="unsub-opt" for="why-5"><input type="radio" id="why-5" name="why" value="Privacy reasons"> Privacy reasons</label>
+        <label class="unsub-opt" for="why-6"><input type="radio" id="why-6" name="why" value="Something else"> Something else</label>
       </fieldset>
       <div class="row">
         <label for="unsub-reason">Anything you&rsquo;d like to add? <span class="opt">(optional)</span></label>
@@ -210,11 +211,12 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNod
     </div>
     <div class="ftr-base">
       <p>&copy; 2026 John Goliash. The count sheet and the KPI lab use sample data.</p>
+      <p class="ftr-perf" id="ftr-perf" title="Live page load timing measured by your browser"><span class="perf-dot" aria-hidden="true"></span> Loaded in <strong id="load-ms">--</strong>ms &middot; 0 frameworks &middot; $0/mo</p>
     </div>
   </footer>
 </div>
 
-<script src="js/main.js?v=1"></script>
-<script src="js/unsubscribe.js?v=1"></script>
+<script src="js/main.js?v=1" defer></script>
+<script src="js/unsubscribe.js?v=1" defer></script>
 </body>
 </html>

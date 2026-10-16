@@ -605,11 +605,12 @@
           if (!/\d/.test(c)) return '<span class="odo-ch">' + (c === '<' ? '&lt;' : c) + '</span>';
           return '<span class="odo"><span class="odo-col"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span></span>';
         }).join('');
-        void odoEl.offsetWidth;                 // new columns roll up from 0
       }
-      var cols = odoEl.querySelectorAll('.odo-col'), n = 0;
-      chars.forEach(function (c) {
-        if (/\d/.test(c)) { cols[n].style.transform = 'translateY(' + (-parseInt(c, 10) * 10) + '%)'; n++; }
+      requestAnimationFrame(function () {
+        var cols = odoEl.querySelectorAll('.odo-col'), n = 0;
+        chars.forEach(function (c) {
+          if (/\d/.test(c) && cols[n]) { cols[n].style.transform = 'translateY(' + (-parseInt(c, 10) * 10) + '%)'; n++; }
+        });
       });
     }
     if (odoEl && !REDUCED) odoHost.classList.add('odo-on');
@@ -1223,7 +1224,7 @@
     }
     function exitApp() {
       if (PWA) { leaveApp(); return; }
-      if (DESKTOP) { window.close(); return; }
+      if (DESKTOP) { if (window.__electronClose) window.__electronClose(); else window.close(); return; }
       if (kapp.classList.contains('is-takeover')) { release('close'); return; }
       if (document.fullscreenElement === kapp) { try { document.exitFullscreen(); } catch (e) {} return; }
       var next = document.getElementById('lab'); next = next && next.nextElementSibling;
@@ -1284,37 +1285,41 @@
     function takeover(manual) {
       if (DESKTOP || kapp.classList.contains('is-takeover')) return;
       closeMenus(false);
-      spacer.style.height = kapp.offsetHeight + 'px';
+      var kh = kapp.offsetHeight;
+      var hdr = document.querySelector('.hdr'), hb = 0;
+      if (hdr && !DESKTOP) hb = Math.max(0, Math.round(hdr.getBoundingClientRect().bottom));
+      spacer.style.height = kh + 'px';
       kapp.parentNode.insertBefore(spacer, kapp);
       lockY = window.pageYOffset;
       /* the site's top menu stays on screen: the app fills the window below it */
-      var hdr = document.querySelector('.hdr'), hb = 0;
-      if (hdr && !DESKTOP) hb = Math.max(0, Math.round(hdr.getBoundingClientRect().bottom));
       kapp.style.top = hb + 'px'; kapp.style.height = 'auto';
       root.classList.add('kapp-open');
       kapp.classList.add('is-takeover');
       kapp.setAttribute('role', 'dialog'); kapp.setAttribute('aria-modal', 'true');
       if (bodyEl) bodyEl.scrollTop = 0;
-      if (moving()) { kapp.classList.remove('pop'); void kapp.offsetWidth; kapp.classList.add('pop'); }
+      if (moving()) {
+        kapp.classList.remove('pop');
+        requestAnimationFrame(function () { kapp.classList.add('pop'); });
+      }
       var x = document.getElementById('kapp-x'); if (x && manual !== 'auto') x.focus({ preventScroll: true });
       status(phone() ? 'Tap X, or scroll past the end, to leave.' : 'Press X or Esc, or keep scrolling past the end, to leave.', true);
     }
     function release(how) {
       if (!kapp.classList.contains('is-takeover')) return;
       armed = false;
+      var sec = document.getElementById('lab'), y = lockY;
+      if (how === 'down' && sec) y = sec.getBoundingClientRect().bottom + window.pageYOffset - 70;
+      if (how === 'up' && sec) y = Math.max(0, sec.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * .9);
       kapp.classList.remove('is-takeover', 'pop', 'pulling');
       kapp.removeAttribute('role'); kapp.removeAttribute('aria-modal');
       kapp.style.top = ''; kapp.style.height = '';
       root.classList.remove('kapp-open');
       if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
-      var sec = document.getElementById('lab'), y = lockY;
-      if (how === 'down' && sec) y = sec.getBoundingClientRect().bottom + window.pageYOffset - 70;
-      if (how === 'up' && sec) y = Math.max(0, sec.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * .9);
       if (how !== 'nav') { try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); } }
       lastY = how === 'nav' ? window.pageYOffset : y;
       status('Ready');
     }
-    var xBtn = document.getElementById('kapp-x'); if (xBtn) xBtn.addEventListener('click', function () { if (PWA) leaveApp(); else if (DESKTOP) window.close(); else if (document.fullscreenElement === kapp) document.exitFullscreen(); else release('close'); });
+    var xBtn = document.getElementById('kapp-x'); if (xBtn) xBtn.addEventListener('click', function () { if (PWA) leaveApp(); else if (DESKTOP) { if (window.__electronClose) window.__electronClose(); else window.close(); } else if (document.fullscreenElement === kapp) document.exitFullscreen(); else release('close'); });
     var maxBtn = document.getElementById('kapp-max'); if (maxBtn) maxBtn.addEventListener('click', toggleFull);
     var contBtn = document.getElementById('kapp-continue'); if (contBtn) contBtn.addEventListener('click', function () { release('down'); });
 
@@ -1346,12 +1351,12 @@
       if (sTick) return; sTick = true;
       requestAnimationFrame(function () {
         sTick = false;
-        if (DESKTOP || kapp.classList.contains('is-takeover')) return;
+        if (DESKTOP || kapp.classList.contains('is-takeover') || !phone()) return;
         var y = window.pageYOffset, down = y > lastY; lastY = y;
         var r = kapp.getBoundingClientRect(), vh = window.innerHeight;
         if (!armed) { if (r.bottom < 0 || r.top > vh) armed = true; return; }
         /* phones only (16 Oct 2026): on desktop the app stays in the page */
-        if (phone() && down && Date.now() < userUntil && r.top < vh * .42 && r.top > -r.height * .5) takeover('auto');
+        if (down && Date.now() < userUntil && r.top < vh * .42 && r.top > -r.height * .5) takeover('auto');
       });
     }, { passive: true });
 

@@ -2,9 +2,10 @@
    The window is the app.  TECHNICAL §4.23, §4.25 */
 html, body { height: 100%; margin: 0; background: var(--bg); overflow: hidden; }
 body::before, body::after { display: none !important; }
-#lab { padding: 0; }
+.site { opacity: 1 !important; height: 100%; }
+#main, #lab { height: 100%; padding: 0; margin: 0; }
 .kapp-status span:last-child { display: inline; }
 /* phones and installed apps: keep clear of the notch and the home bar */
 .kapp.is-desktop .kapp-bar { padding-top: env(safe-area-inset-top, 0px); min-height: calc(42px + env(safe-area-inset-top, 0px)); }
 .kapp.is-desktop .kapp-status { padding-bottom: calc(.35rem + env(safe-area-inset-bottom, 0px)); }
-.kapp.is-desktop { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.kapp.is-desktop { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); position: fixed; inset: 0; }

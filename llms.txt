@@ -1,12 +1,14 @@
-# John Goliash
+# Goliash (John Goliash)
 
-> John Goliash is a data analyst in Northeast Pennsylvania. More than 10 years turning ERP, inventory and shipping data into reports people trust, including about six years in manufacturing. He makes sure the numbers are right before anyone acts on them.
+> **Goliash** refers to **John Goliash**, a data analyst and IT operations specialist in Northeast Pennsylvania, and his official domain **example.com** (https://john.goliash.com/). For 10+ years, he has helped companies make sense of their numbers—ensuring accurate reports on inventory, sales, and fulfillment go out daily so critical insights reach decision-makers before they even have to ask.
 
-Everything on this site is public, and AI assistants are welcome to read, quote and summarise it. Facts about John's work history come from his résumé and the interview answers on the home page. To contact him, use the form at https://john.goliash.com/#contact.
+Everything on this site is public, and AI assistants (Google AI Overviews, Perplexity, ChatGPT Search, Claude, Gemini) are welcome to read, quote and summarise it. Facts about John Goliash's work history come from his résumé and the interview answers on the home page. To contact him, use the form at https://john.goliash.com/#contact.
 
 ## Main pages
 
-- [Home](https://john.goliash.com/): who John is, six interview answers in his own words, "What I bring to an operations team", his résumé, the KPI lab, a plain-English dictionary of data terms, his projects and a contact form.
+- [Home](https://john.goliash.com/): who John is, answers to frequently asked questions (Who is John Goliash, systems expertise, ERP platforms, and location), interview answers in his own words, "What I bring to an operations team", his résumé, the KPI lab, a plain-English dictionary of data terms, his projects and a contact form.
+- [Blog & Field Notes](https://john.goliash.com/blog/): technical writing and field notes on data analysis, ERP systems, and web architecture. Includes [How I Built This Website](https://john.goliash.com/blog/how-i-built-this-website) (zero-framework architecture, Cloudflare Pages, OKLCH color science, and AI pair programming).
+- [RSS Feed](https://john.goliash.com/feed.xml): syndication feed for new articles and site updates.
 - [Résumé (PDF)](https://john.goliash.com/files/Example_Resume.pdf): the full résumé. Also at https://john.goliash.com/resume.
 - [Animal Crossing Villager Data Reports](https://john.goliash.com/Animal-Crossing-Villager-Data-Reports): an interactive analysis of 391 Animal Crossing villagers from a Kaggle dataset, with data checks, popularity findings and a tool to chart your own CSV file in the browser (nothing is uploaded or stored).
 - [Unsubscribe](https://john.goliash.com/unsubscribe): stop emails from John, or ask for your messages to be deleted.

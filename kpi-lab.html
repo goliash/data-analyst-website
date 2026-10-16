@@ -29,7 +29,7 @@
 <div id="site" class="site">
   <main id="main">
     <section id="lab">
-      <div class="kapp" id="kapp" aria-label="KPI lab">
+      <div class="kapp is-desktop" id="kapp" role="region" aria-label="KPI lab">
         <div class="kapp-chrome">
         <div class="kapp-bar">
           <span class="kapp-ico"><svg viewBox="0 0 40 40" width="20" height="20" aria-hidden="true"><rect x="5" y="4" width="8" height="24" rx="2.5" fill="#f7bc57"/><rect x="16" y="4" width="8" height="24" rx="2.5" fill="#73b3f4"/><rect x="27" y="4" width="8" height="24" rx="2.5" fill="#62d4a5"/><rect x="5" y="31" width="30" height="4" rx="2" fill="#62d4a5"/></svg></span>
@@ -38,7 +38,7 @@
           <button type="button" class="kapp-win kapp-x" id="kapp-x" aria-label="Close the KPI lab and go back to the page" title="Close"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="kapp-menus" id="kapp-menus" role="menubar" aria-label="KPI lab menu">
-            <div class="km">
+            <div class="km" role="none">
               <button type="button" class="km-top" id="km-file" role="menuitem" aria-haspopup="menu" aria-expanded="false"><u>F</u>ile</button>
               <div class="km-pop" id="km-file-pop" role="menu" aria-labelledby="km-file" hidden>
                 <button type="button" class="km-i" role="menuitem" data-cmd="save" tabindex="-1"><span class="km-tick" aria-hidden="true"></span><span class="km-t">Save</span><kbd>Ctrl+S</kbd></button>
@@ -54,7 +54,7 @@
                 <button type="button" class="km-i" role="menuitem" data-cmd="exit" tabindex="-1"><span class="km-tick" aria-hidden="true"></span><span class="km-t">Exit</span><kbd>Esc</kbd></button>
               </div>
             </div>
-            <div class="km">
+            <div class="km" role="none">
               <button type="button" class="km-top" id="km-edit" role="menuitem" aria-haspopup="menu" aria-expanded="false"><u>E</u>dit</button>
               <div class="km-pop" id="km-edit-pop" role="menu" aria-labelledby="km-edit" hidden>
                 <button type="button" class="km-i" role="menuitem" data-cmd="copy" tabindex="-1"><span class="km-tick" aria-hidden="true"></span><span class="km-t">Copy result</span></button>
@@ -65,11 +65,11 @@
                 <button type="button" class="km-i" role="menuitem" data-cmd="clear" tabindex="-1"><span class="km-tick" aria-hidden="true"></span><span class="km-t">Delete saved numbers</span></button>
               </div>
             </div>
-            <div class="km">
+            <div class="km" role="none">
               <button type="button" class="km-top" id="km-measures" role="menuitem" aria-haspopup="menu" aria-expanded="false"><u>M</u>easures</button>
               <div class="km-pop" id="km-measures-pop" role="menu" aria-labelledby="km-measures" hidden></div>
             </div>
-            <div class="km">
+            <div class="km" role="none">
               <button type="button" class="km-top" id="km-view" role="menuitem" aria-haspopup="menu" aria-expanded="false"><u>V</u>iew</button>
               <div class="km-pop" id="km-view-pop" role="menu" aria-labelledby="km-view" hidden>
                 <button type="button" class="km-i" role="menuitemcheckbox" data-cmd="lessons" tabindex="-1" aria-checked="true"><span class="km-tick" aria-hidden="true"></span><span class="km-t">Lesson cards</span></button>
@@ -78,7 +78,7 @@
                 <button type="button" class="km-i" role="menuitem" data-cmd="full" tabindex="-1"><span class="km-tick" aria-hidden="true"></span><span class="km-t">Full screen</span></button>
               </div>
             </div>
-            <div class="km">
+            <div class="km" role="none">
               <button type="button" class="km-top" id="km-help" role="menuitem" aria-haspopup="menu" aria-expanded="false"><u>H</u>elp</button>
               <div class="km-pop" id="km-help-pop" role="menu" aria-labelledby="km-help" hidden>
                 <button type="button" class="km-i" role="menuitem" data-cmd="howto" tabindex="-1"><span class="km-tick" aria-hidden="true"></span><span class="km-t">How to use KPI Lab</span></button>
@@ -108,7 +108,7 @@
               <p class="lab-value"><output id="lab-value" form="lab-form">98.4%</output><span class="odo-wrap" id="lab-odo" aria-hidden="true"></span><span class="lab-vunit" id="lab-vunit"></span></p>
               <p class="lab-formula" id="lab-formula">492 matched &divide; 500 counted</p>
               <div class="bullet" id="lab-bullet" aria-hidden="true">
-                <svg viewBox="0 0 400 46" preserveAspectRatio="none" class="bullet-svg">
+                <svg viewBox="0 0 400 46" preserveAspectRatio="none" class="bullet-svg" aria-hidden="true">
                   <rect class="b-track" x="0" y="14" width="400" height="18" rx="3"/>
                   <rect class="b-near"  x="372" y="14" width="20" height="18"/>
                   <rect class="b-good"  x="392" y="14" width="8" height="18"/>

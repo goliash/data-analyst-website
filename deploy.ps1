@@ -53,6 +53,9 @@ $UseToken = Test-Path $EnvFile
 # npx.cmd passes arguments through normally.
 $Npx = Get-Command npx.cmd -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
 if (-not $Npx) { $Npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1 }
+$Esbuild = Get-Command esbuild.cmd -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+if (-not $Esbuild) { $Esbuild = Get-Command esbuild.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1 }
+if (-not $Esbuild) { $Esbuild = Get-ChildItem -Path "$env:LOCALAPPDATA\npm-cache" -Filter 'esbuild.exe' -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 }
 
 function Invoke-Wrangler {
     # wrangler writes progress to stderr. In Windows PowerShell 5.1, 2>&1 turns
@@ -117,9 +120,9 @@ New-Item -ItemType Directory -Path $Stage -Force | Out-Null
 
 # The allow-list. Anything not named here does not ship.
 $Files = @('index.html', 'disclosure.html', '404.html', 'Animal-Crossing-Villager-Data-Reports.html', 'unsubscribe.html',
-           'kpi-lab.html', 'kpi-lab.webmanifest', 'kpi-sw.js',
+           'kpi-lab.html', 'kpi-lab.webmanifest', 'kpi-sw.js', 'feed.xml',
            '_headers', '_redirects', 'robots.txt', 'llms.txt', 'sitemap.xml', 'site.webmanifest')
-$Dirs  = @('css', 'js', 'img', 'files')
+$Dirs  = @('css', 'js', 'img', 'files', 'blog')
 
 foreach ($f in $Files) {
     $p = Join-Path $Root $f
@@ -157,6 +160,21 @@ Get-ChildItem $Stage -Filter *.html -Recurse | ForEach-Object {
     Write-Text $_.FullName ([regex]::Replace($t, '\?v=\d+', "?v=$version"))
 }
 Write-Host "Cache version: v$version" -ForegroundColor Cyan
+
+# ------------------------------------------------- minify staged CSS & JS
+if ($Esbuild -or $Npx) {
+    Write-Host "Minifying staged CSS and JS with esbuild..." -ForegroundColor DarkGray
+    $prevEA = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    Get-ChildItem $Stage -Include *.css,*.js -Recurse -File | ForEach-Object {
+        if ($Esbuild) {
+            & $Esbuild.FullName $_.FullName --minify --allow-overwrite "--outfile=$($_.FullName)" 2>$null | Out-Null
+        } else {
+            & $Npx.Source esbuild $_.FullName --minify --allow-overwrite "--outfile=$($_.FullName)" 2>$null | Out-Null
+        }
+    }
+    $ErrorActionPreference = $prevEA
+}
 
 # ------------------------------------------------------------------- gates
 # 1. Encoding: the em dash in the <title> must survive, no BOM, no mojibake.

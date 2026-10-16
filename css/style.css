@@ -295,7 +295,7 @@ h1, h2, h3, h4, h5 { margin: 0; line-height: 1.1; font-weight: 700; }
 /* Repeat load in the same visit: html.seen is set by the head script before
    first paint, so the intro never flashes on screen (§4.5). */
 html.seen .intro { display: none; }
-html.seen .site { opacity: 1; animation: none; }
+html.seen .site, html[data-desktop] .site, html[data-pwa] .site { opacity: 1; animation: none; }
 html.seen .rule { transform: scaleX(1); animation: none; }
 
 /* --- the dual borders: floor tape. Count, match, system — expanding from the
@@ -370,6 +370,11 @@ html.seen .rule { transform: scaleX(1); animation: none; }
 .theme svg { width: 18px; height: 18px; }
 
 .menu-btn { display: none; }
+
+/* Snappy interactions: zero touch latency on mobile */
+a, button, input, textarea, select, summary, [role="button"] {
+  touch-action: manipulation;
+}
 
 /* ---------- buttons ---------- */
 .cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
@@ -754,8 +759,11 @@ html.js .lab-nojs { display: none; }
   transition: border-color .2s, background-color .2s;
 }
 .chip:hover { border-color: var(--match); background: var(--surface-2); }
-.aside-links { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: 1rem 0 0 !important; }
-.aside-links a { font-weight: 600; }
+.aside-links { display: flex; flex-wrap: wrap; gap: .6rem 1.25rem; margin: 1rem 0 0 !important; }
+.aside-links a { display: inline-flex; align-items: center; gap: .42rem; font-weight: 600; text-decoration: none; color: var(--ink); transition: color .2s; }
+.aside-links a:hover { color: var(--match); }
+.aside-ico { width: 16px; height: 16px; flex: none; display: inline-block; vertical-align: middle; transition: transform .18s var(--ease); }
+.aside-links a:hover .aside-ico { transform: translateY(-1px); }
 .next { margin: 0; padding-left: 1.15rem; }
 .next li { font-size: .95rem; color: var(--ink-dim); margin-bottom: .5rem; }
 .next li::marker { color: var(--match); font-weight: 700; }
@@ -783,8 +791,23 @@ html.js .lab-nojs { display: none; }
   max-width: var(--wrap); margin: 0 auto;
   padding: 1rem var(--gutter) calc(1.6rem + env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.4rem;
 }
 .ftr-base p { margin: 0; font-size: .86rem; color: var(--muted); }
+.ftr-perf {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font: 500 .82rem/1 var(--sans); color: var(--ink-dim);
+  background: var(--surface); border: 1px solid var(--line);
+  padding: .32rem .65rem; border-radius: 4px;
+}
+.ftr-perf strong { color: var(--match); font-variant-numeric: tabular-nums; font-weight: 700; }
+.perf-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--match); box-shadow: 0 0 6px var(--match);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+@keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+
 
 /* ========================= DISCLOSURE ========================= */
 .doc { max-width: 74ch; margin: 0 auto; padding: clamp(2.5rem,6vw,4.5rem) var(--gutter) 4rem; }
@@ -805,6 +828,99 @@ html.js .lab-nojs { display: none; }
 .doc-wrap { overflow-x: auto; }
 .doc-note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--match); border-radius: 0 8px 8px 0; padding: 1.2rem 1.3rem; margin: 0 0 1.4rem; }
 .doc-note p:last-child { margin-bottom: 0; }
+
+/* ========================= FAQ SECTION ========================= */
+.faq-section { position: relative; }
+.faq-inner { max-width: 78ch; margin: 0 auto; }
+.faq-list { margin-top: 2.2rem; display: flex; flex-direction: column; gap: 1rem; }
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.faq-item[open] {
+  border-color: var(--match);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.faq-q {
+  padding: 1.2rem 1.4rem;
+  font-family: var(--display);
+  font-stretch: 87.5%;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  user-select: none;
+  transition: background-color .15s ease, color .15s ease;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q:hover { background: var(--match-wash); color: var(--ink); }
+.faq-chevron {
+  width: 20px;
+  height: 20px;
+  color: var(--match);
+  flex-shrink: 0;
+  transition: transform .25s ease;
+}
+.faq-item[open] .faq-chevron {
+  transform: rotate(180deg);
+}
+.faq-a {
+  padding: 0 1.4rem 1.35rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.1rem;
+  color: var(--ink-dim);
+  font-size: .98rem;
+  line-height: 1.62;
+}
+.faq-a p { margin: 0 0 .75rem; }
+.faq-a p:last-child { margin-bottom: 0; }
+.faq-a ul { margin: .5rem 0 .75rem; padding-left: 1.3rem; }
+.faq-a li { margin-bottom: .4rem; }
+
+/* ========================= BLOG INDEX & POSTS ========================= */
+.blog-index { max-width: 78ch; margin: 0 auto; padding: clamp(2.5rem,6vw,4.5rem) var(--gutter) 4rem; }
+.blog-hero { margin-bottom: 2.8rem; }
+.blog-sub { color: var(--ink-dim); font-size: 1.12rem; max-width: 62ch; margin: .6rem 0 1.2rem; }
+.blog-feed-badge { display: flex; align-items: center; gap: .7rem; margin-top: 1rem; }
+.feed-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .45rem .85rem; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); color: var(--ink-dim); font-size: .88rem; font-weight: 600;
+  text-decoration: none; transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.feed-btn:hover { background: var(--match-wash); border-color: var(--match); color: var(--ink); }
+.feed-ico { width: 16px; height: 16px; color: var(--match); }
+.blog-list { display: flex; flex-direction: column; gap: 1.6rem; }
+.blog-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 1.6rem 1.8rem; transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.blog-card:hover { border-color: var(--match); box-shadow: 0 6px 20px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.blog-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin-bottom: .6rem; font-size: .88rem; color: var(--muted); }
+.blog-tag {
+  background: var(--match-wash); color: var(--match); font-weight: 600;
+  font-size: .8rem; padding: .18rem .55rem; border-radius: 4px;
+}
+.blog-card-h { font-family: var(--display); font-stretch: 87.5%; font-size: 1.45rem; line-height: 1.2; margin: 0 0 .6rem; }
+.blog-card-h a { color: var(--ink); text-decoration: none; }
+.blog-card-h a:hover { color: var(--match); }
+.blog-card-p { color: var(--ink-dim); font-size: .98rem; line-height: 1.55; margin: 0 0 1rem; }
+.blog-card-more { font-weight: 600; font-size: .94rem; color: var(--match); text-decoration: none; display: inline-flex; align-items: center; gap: .35rem; }
+.blog-card-more:hover { text-decoration: underline; }
+.post-meta-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+  margin: 1rem 0 2rem; padding: .75rem 1rem; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; font-size: .9rem; color: var(--muted);
+}
+.post-meta-bar .author { font-weight: 600; color: var(--ink); }
 
 /* ========================= 404 ========================= */
 .err { max-width: var(--wrap); margin: 0 auto; padding: clamp(3rem,8vw,6rem) var(--gutter) 4rem; min-height: 60vh; }
@@ -1884,46 +2000,70 @@ html:not(.js) .resume-print-btn { display: none; }
 .pc-logo img.pc-seal { width: 12.5rem; height: auto; max-height: none; max-width: none; border-radius: 50%; }
 @media (max-width: 700px) { .pc-logo img.pc-seal { width: 9.8rem; } }
 
-/* Résumé Print button (16 Oct 2026): prints only the PDF page, as a picture */
+/* Résumé Print button: prints the PDF page picture (files/resume-print.svg) on exactly 1 page */
 .resume-print-page { display: none; }
-@page resumepdf { size: letter; margin: 0; }
 @media print {
   html.resume-pdf body > *:not(#resume-print-page) { display: none !important; }
-  html.resume-pdf body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
-  html.resume-pdf #resume-print-page { display: block !important; page: resumepdf; width: 100%; max-width: 8.45in; height: auto; max-height: 10.9in; margin: 0 auto; break-inside: avoid; }
-  /* iPhone (16 Oct 2026): Safari keeps its own page margins, so a full-height letter page spilled onto a
-     blank second sheet. Taken out of the flow and held to the printable area, it's always one page. */
-  html.resume-pdf, html.resume-pdf body { height: auto !important; min-height: 0 !important; }
   html.resume-pdf body::before, html.resume-pdf body::after { display: none !important; }
-  html.resume-pdf #resume-print-page { position: absolute; top: 0; left: 0; right: 0; width: auto; max-width: 100%; max-height: 100vh; object-fit: contain; }
-  /* In iPhone print, 100vh is the whole sheet, margins included, so the picture's blank bottom edge still
-     spilled onto page 2. Held to 9.3 × 7.2 in, it fits inside any phone's or printer's margins. */
-  html.resume-pdf #resume-print-page { max-height: 9.3in; max-width: 7.2in; page: auto; }   /* no named page: it forced extra page breaks in Chrome */
-  /* Safari on iPhone also prints a date/title header and a web-address footer inside the page, which
-     Chrome on iPhone doesn't; 8.4 × 6.5 in leaves room for them (about 88% of full size, still crisp). */
-  html.resume-pdf #resume-print-page { max-height: 8.4in; max-width: 6.5in; }
-  /* with the page margins taken away (main.js §9b), sit a little in from the paper's edge */
-  html.resume-pdf #resume-print-page { top: .3in; }
-  /* Safari on iPhone lays the page out at phone width and scales it up to the paper, so inches grow
-     on paper and page 2 still appeared. A share of the printed page's own height (vh) scales with it. */
-  html.resume-pdf #resume-print-page { max-height: min(8.4in, 78vh); top: min(.3in, 2vh); }
-  /* 78vh came out at about 60% of the page width in Safari (John, 12:28: "too small"). In print, vh is the
-     printable height, so 95vh fills the page and still leaves room; 10.4in caps it where vh is the whole sheet. */
-  html.resume-pdf #resume-print-page { max-height: min(10.4in, 95vh); max-width: 100%; top: min(.2in, 1.5vh); }
-  /* Maximum size (John, 12:34). files/resume-print.svg is now cropped to the résumé's text (no PDF margins,
-     tools/make-resume-print.py), so the page's own margins are the only ones. Safari: 98% of the printable
-     height. Browsers that drop the margins (main.js asks for none): half an inch all round, 7.5 × 10 in. */
-  html.resume-pdf #resume-print-page { max-height: min(10in, 98vh); max-width: min(7.5in, 100%); top: min(.5in, 1vh); }
-  /* Safari only (main.js adds .print-safari): its print vh and inches don't match the paper, so size by
-     width instead: 92% of the printable width (about 6.9 × 9 in on Letter, inside Safari's margins). */
-  html.resume-pdf.print-safari #resume-print-page { width: 92%; height: auto; max-width: none; max-height: none; top: 0; }
-  /* iPhone and iPad, every browser (they all print with Apple's engine). Measured from John's previews
-     (12:43): the print layout box is only about 75% of the paper's width, and 92% of it printed at 69% of the
-     paper. 115% of it is about 86% of the paper: 7.3 × 9.6 in on Letter, centred, about 0.6–0.7 in all round.
-     Nothing may clip it, so the page's overflow stays visible here. */
-  html.resume-pdf.print-ios, html.resume-pdf.print-ios body { overflow: visible !important; }
-  html.resume-pdf.print-ios #resume-print-page { width: 115%; height: auto; max-width: none; max-height: none; top: 0; left: 50%; right: auto; margin: 0; transform: translateX(-50%); }
-  html.resume-pdf, html.resume-pdf body { overflow: hidden !important; }
+  html.resume-pdf, html.resume-pdf body {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: hidden !important;
+  }
+
+  /* Desktop browsers (Chrome, Brave, Edge, Firefox, Mac Safari):
+     Paper is 8.5 x 11 in (Letter). With 0 browser margins from @page,
+     width: 7.95in and height: 10.43in fills the sheet with uniform ~0.27in thin bezels on all 4 sides.
+     break-inside: avoid and overflow: hidden prevent any second page. */
+  html.resume-pdf #resume-print-page {
+    display: block !important;
+    position: static !important;
+    box-sizing: border-box !important;
+    width: 7.95in !important;
+    max-width: calc(100% - 0.55in) !important;
+    height: auto !important;
+    max-height: 10.45in !important;
+    margin: 0.27in auto !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* iPhone & iPad (iOS Safari and iOS Chrome):
+     iOS WebKit renders print layouts at the mobile viewport width, then scales to paper.
+     92% width scales to ~7.8in on Letter paper with ~0.34in uniform side bezels.
+     Height scales to ~10.26in, leaving room at the bottom for Safari's AirPrint URL footer
+     so it never collides and never pushes the content onto a 2nd page.
+     Fits cleanly on 1 page in both Safari and Chrome. */
+  html.resume-pdf.print-ios,
+  html.resume-pdf.print-ios body {
+    overflow: hidden !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+  html.resume-pdf.print-ios #resume-print-page {
+    display: block !important;
+    position: static !important;
+    box-sizing: border-box !important;
+    width: 92% !important;
+    max-width: 92% !important;
+    height: auto !important;
+    max-height: 94% !important;
+    margin: 2.5% auto 0 !important;
+    transform: none !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    object-fit: contain !important;
+    object-position: center top !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
 /* the dictionary book in dark mode (16 Oct 2026, John: "too bright in dark mode"):
    the same open book, printed on dark paper with warm light ink. Print always uses the light book. */
@@ -2112,4 +2252,174 @@ html:not(.js) .resume-print-btn { display: none; }
 }
 @media (min-width: 1000px) and (max-width: 1200px) {
   .words { columns: 3 15rem !important; }
+}
+
+/* =====================================================================
+   Click-to-Call Floating Action Button (16 Oct 2026, John: compact interface style)
+   - Square button with rounded corners, matching the site's interface (theme toggle, chips)
+   - Clean vector SVG phone icon (no OS emoji color clashing)
+   - Desktop: compact 38x38px; Mobile: pushed all the way to bottom-right (36x36px)
+   - Matches site theme: var(--surface), var(--line), var(--ink), highlights with var(--match)
+   - Tooltip: "Call or leave a voicemail to reach out to me"
+   - Completely bot-obfuscated runtime dialing
+   ===================================================================== */
+.fab-call {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 95;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.35), var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.18s var(--ease), border-color 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fab-call:hover {
+  border-color: var(--match);
+  color: var(--match);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px -2px rgba(0, 0, 0, 0.45), 0 0 0 3px var(--match-wash);
+}
+
+.fab-call:active {
+  transform: scale(0.94);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.fab-call:focus-visible {
+  outline: 2px solid var(--match);
+  outline-offset: 2px;
+  border-color: var(--match);
+}
+
+/* Vector SVG Phone Icon */
+.fab-call-ico {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.fab-call:hover .fab-call-ico {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* Tooltip */
+.fab-call-tip {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  padding: 0.4rem 0.75rem;
+  border-radius: 7px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+
+/* Tooltip caret pointing toward the button */
+.fab-call-tip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid var(--line);
+}
+
+.fab-call:hover .fab-call-tip,
+.fab-call:focus-visible .fab-call-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Hide when KPI Lab is in takeover mode so it never blocks the dashboard */
+html.kapp-open .fab-call,
+.kapp.is-takeover ~ .fab-call {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .fab-call { transition: none; }
+  .fab-call-tip { transition: none; }
+  .fab-call-ico { transition: none; }
+}
+
+html.no-motion .fab-call { transition: none; }
+html.no-motion .fab-call-tip { transition: none; }
+
+/* Responsive on mobile: pushed tight to the bottom right, compact square */
+@media (max-width: 600px) {
+  .fab-call {
+    width: 36px;
+    height: 36px;
+    border-radius: 7px;
+    right: calc(8px + env(safe-area-inset-right, 0px));
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .fab-call-ico {
+    width: 17px;
+    height: 17px;
+  }
+  .fab-call-tip {
+    right: 0;
+    bottom: calc(100% + 8px);
+    top: auto;
+    transform: translateY(4px);
+    font-size: 0.78rem;
+    padding: 0.38rem 0.65rem;
+    white-space: normal;
+    max-width: min(260px, calc(100vw - 20px));
+    text-align: right;
+  }
+  .fab-call-tip::after {
+    top: auto;
+    bottom: -5px;
+    right: 14px;
+    transform: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--line);
+    border-bottom: 0;
+  }
+  .fab-call:hover .fab-call-tip,
+  .fab-call:focus-visible .fab-call-tip {
+    transform: translateY(0);
+  }
+}
+
+/* Print: never show FAB on printed resume */
+@media print {
+  .fab-call { display: none !important; }
 }

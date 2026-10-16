@@ -25,6 +25,7 @@ def kapp_markup(html):
     raise SystemExit('KPI Lab markup not closed in index.html')
 
 KAPP = kapp_markup(INDEX)
+KAPP_APP = KAPP.replace('<div class="kapp" id="kapp"', '<div class="kapp is-desktop" id="kapp"')
 THEME = """<script>
   /* light or dark: the app's own choice, else the device's */
   (function () { var t = null; try { t = localStorage.getItem('kpi-lab-theme'); } catch (e) {}
@@ -58,7 +59,7 @@ PWA = f"""<!DOCTYPE html>
 <div id="site" class="site">
   <main id="main">
     <section id="lab">
-      {KAPP}
+      {KAPP_APP}
     </section>
   </main>
 </div>
@@ -72,7 +73,7 @@ ELECTRON = f"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>KPI Lab</title>
 {THEME}
 <link rel="stylesheet" href="style.css">
@@ -84,7 +85,7 @@ ELECTRON = f"""<!DOCTYPE html>
 <div id="site" class="site">
   <main id="main">
     <section id="lab">
-      {KAPP}
+      {KAPP_APP}
     </section>
   </main>
 </div>

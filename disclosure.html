@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Full disclosure — John Goliash</title>
-<meta name="description" content="What john.goliash.com collects, what it doesn't, the cookies it uses, Google Analytics and how to switch it off, and how AI was used to build it.">
+<title>Full disclosure — John Goliash (Goliash)</title>
+<meta name="description" content="What john.goliash.com (Goliash) collects, what it doesn't, the cookies it uses, Google Analytics and how to switch it off, and how AI was used to build it.">
+<meta name="keywords" content="John Goliash, Goliash, disclosure, privacy, analytics, example.com">
 <link rel="canonical" href="https://john.goliash.com/disclosure">
+<link rel="alternate" type="application/rss+xml" title="Goliash — Field Notes &amp; Writing" href="https://john.goliash.com/feed.xml">
 <meta name="author" content="John Goliash">
 <meta name="robots" content="index, follow, max-snippet:-1">
 <meta property="og:type" content="website">
@@ -88,7 +90,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNod
       <span class="wm">John Goliash</span>
     </a>
 
-    <button id="menu" class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">
+    <button id="menu" class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav">
       <span class="menu-ico" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="menu-label">Menu</span>
     </button>
@@ -333,10 +335,16 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNod
     </div>
     <div class="ftr-base">
       <p>&copy; 2026 John Goliash. The count sheet and the KPI lab use sample data.</p>
+      <p class="ftr-perf" id="ftr-perf" title="Live page load timing measured by your browser"><span class="perf-dot" aria-hidden="true"></span> Loaded in <strong id="load-ms">--</strong>ms &middot; 0 frameworks &middot; $0/mo</p>
     </div>
   </footer>
+
+  <a id="fab-call" class="fab-call" href="index.html#contact" aria-label="Call or leave a voicemail to reach out to me" role="button">
+    <svg class="fab-call-ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <span class="fab-call-tip" role="tooltip" aria-hidden="true">Call or leave a voicemail to reach out to me</span>
+  </a>
 </div>
 
-<script src="js/main.js?v=1"></script>
+<script src="js/main.js?v=1" defer></script>
 </body>
 </html>

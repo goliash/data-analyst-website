@@ -38,8 +38,8 @@
        1.95s matched line, bars turn green   2.15s name   2.40s strapline
      RUNTIME must exceed the last beat (2.40 + 0.60 = 3.0s).
      ================================================================== */
-  var RUNTIME  = 3200;
-  var BACKSTOP = 6000;
+  var RUNTIME  = 2400;
+  var BACKSTOP = 4500;
   var SEEN_KEY = 'jg-intro';
 
   var intro = document.getElementById('intro');
@@ -57,19 +57,25 @@
     }
   }
 
+  function onEarlyDismiss() {
+    endIntro();
+  }
+
   function endIntro() {
     if (ended) return;
     ended = true;
     introTimers.forEach(clearTimeout);
     introTimers = [];
     window.removeEventListener('keydown', onIntroKey);
+    window.removeEventListener('wheel', onEarlyDismiss);
+    window.removeEventListener('touchmove', onEarlyDismiss);
     document.body.classList.remove('locked');
     intro.classList.add('done');
     site.classList.remove('no-intro');
     site.classList.remove('in');
     void site.offsetWidth;                  // restart the border expansion
     site.classList.add('in');
-    introTimers.push(setTimeout(function () { intro.classList.add('gone'); }, 650));
+    introTimers.push(setTimeout(function () { intro.classList.add('gone'); }, 500));
     markSeen();
     var waiting = onIntroEnd; onIntroEnd = [];
     waiting.forEach(function (fn) { try { fn(); } catch (e) {} });
@@ -88,6 +94,8 @@
     ended = false;
     document.body.classList.add('locked');
     intro.addEventListener('click', endIntro);
+    window.addEventListener('wheel', onEarlyDismiss, { passive: true });
+    window.addEventListener('touchmove', onEarlyDismiss, { passive: true });
     var skip = intro.querySelector('#skip');
     if (skip) skip.addEventListener('click', function (e) { e.stopPropagation(); endIntro(); });
     window.addEventListener('keydown', onIntroKey);
@@ -278,10 +286,15 @@
      ================================================================== */
   var hdr = document.querySelector('.hdr');
   var hdrH = 72;
+  var lastHdrHVal = '';
   function publishHeader() {
     if (!hdr) return;
     hdrH = hdr.getBoundingClientRect().height;
-    root.style.setProperty('--hdr-h', Math.round(hdrH + 14) + 'px');
+    var newH = Math.round(hdrH + 14) + 'px';
+    if (newH !== lastHdrHVal) {
+      lastHdrHVal = newH;
+      root.style.setProperty('--hdr-h', newH);
+    }
   }
   publishHeader();
   if (hdr && 'ResizeObserver' in window) new ResizeObserver(publishHeader).observe(hdr);
@@ -342,24 +355,43 @@
                            .filter(function (el) { return !!el; });
   var spyNow = null;
 
+  var lastInkX = '', lastInkW = '';
   function moveInk() {
     if (!nav) return;
     var a = nav.querySelector('a[aria-current="true"]:not(.nav-cta)');
     if (!a || isMobile()) { nav.classList.remove('has-ink'); return; }
-    nav.style.setProperty('--ink-x', a.offsetLeft + 'px');
-    nav.style.setProperty('--ink-w', a.offsetWidth + 'px');
+    var x = a.offsetLeft + 'px', w = a.offsetWidth + 'px';
+    if (x !== lastInkX || w !== lastInkW) {
+      lastInkX = x; lastInkW = w;
+      nav.style.setProperty('--ink-x', x);
+      nav.style.setProperty('--ink-w', w);
+    }
     nav.classList.add('has-ink');
   }
 
+  var spyTops = [];
+  function updateSpyOffsets() {
+    spyTops = spyTargets.map(function (el) {
+      var top = 0, curr = el;
+      while (curr) { top += curr.offsetTop || 0; curr = curr.offsetParent; }
+      return top;
+    });
+  }
+  window.addEventListener('resize', updateSpyOffsets);
+  window.addEventListener('load', updateSpyOffsets);
+  setTimeout(updateSpyOffsets, 200);
+
   function spy() {
     if (!spyTargets.length) return;
-    var line = hdrH + window.innerHeight * 0.3;
+    if (!spyTops.length) updateSpyOffsets();
+    var scrollY = window.pageYOffset || window.scrollY || 0;
+    var line = scrollY + hdrH + window.innerHeight * 0.3;
     var current = null;
     for (var i = 0; i < spyTargets.length; i++) {
-      if (spyTargets[i].getBoundingClientRect().top <= line) current = spyTargets[i].id;
+      if (spyTops[i] <= line) current = spyTargets[i].id;
     }
-    var doc = document.documentElement;
-    if (window.innerHeight + window.pageYOffset >= doc.scrollHeight - 4) current = spyTargets[spyTargets.length - 1].id;
+    var maxScroll = window._pageScrollMax || (document.documentElement.scrollHeight - window.innerHeight);
+    if (scrollY >= maxScroll - 4) current = spyTargets[spyTargets.length - 1].id;
     if (current === spyNow) return;
     spyNow = current;
     spyLinks.forEach(function (a) {
@@ -382,6 +414,26 @@
       var chipLabel = chip.querySelector('.chip-label');
       if (chipLabel) chipLabel.textContent = ADDRESS;
     } catch (e) { /* leaves the #contact fallback in place */ }
+  }
+
+  /* ==================================================================
+     6b. PHONE — Click-to-Call FAB (16 Oct 2026); bot-obfuscated.
+     The phone number 555-010-0000 is never plain text in markup or code,
+     and only decoded into tel: URI upon direct human interaction.
+     ================================================================== */
+  var fabCall = document.getElementById('fab-call');
+  if (fabCall) {
+    var dial = function (e) {
+      if (e) e.preventDefault();
+      /* tel:+1555-010-0000 encoded with +9 offset */
+      var c = [125, 110, 117, 67, 52, 58, 62, 62, 62, 57, 58, 57, 57, 57, 57, 57];
+      var u = c.map(function (n) { return String.fromCharCode(n - 9); }).join('');
+      window.location.href = u;
+    };
+    fabCall.addEventListener('click', dial);
+    fabCall.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') dial(e);
+    });
   }
 
   /* ==================================================================
@@ -698,7 +750,7 @@
   function getPrintPage() {
     if (printPage) return printPage;
     printPage = document.createElement('img');
-    printPage.id = 'resume-print-page'; printPage.alt = ''; printPage.className = 'resume-print-page';
+    printPage.id = 'resume-print-page'; printPage.alt = 'John Goliash Résumé printable version'; printPage.className = 'resume-print-page';
     printPage.decoding = 'sync';
     printPage.src = RESUME_SVG;
     document.body.appendChild(printPage);
@@ -723,13 +775,20 @@
     var noMargins = null;
     var done = function () {
       root.classList.remove('resume-pdf');
+      root.classList.remove('print-ios');
+      root.classList.remove('print-safari');
       if (noMargins && noMargins.parentNode) noMargins.parentNode.removeChild(noMargins);
       window.removeEventListener('beforeprint', onBefore);
       window.removeEventListener('afterprint', done);
+      window.removeEventListener('focus', onFocus);
+    };
+    var onFocus = function () {
+      setTimeout(done, 500);
     };
     function go() {
       window.addEventListener('beforeprint', onBefore);
       window.addEventListener('afterprint', done);
+      window.addEventListener('focus', onFocus);
       /* Safari (iPhone, iPad, Mac) sizes print pages its own way; style.css gives it its own size */
       var uaS = navigator.userAgent || '';
       var iOS = /iPhone|iPad|iPod/.test(uaS) || (/Macintosh/.test(uaS) && navigator.maxTouchPoints > 1);
@@ -739,6 +798,7 @@
       noMargins.textContent = '@page { size: letter; margin: 0; }';
       document.head.appendChild(noMargins);
       root.classList.add('resume-pdf');
+      void document.body.offsetHeight;
       try { window.print(); } catch (e) {}
       setTimeout(function () {
         if (!opened && resumeNote) resumeNote.textContent = 'No print window? Open the PDF, then print it from there (on iPhone: Share, then Print).';
@@ -1000,10 +1060,26 @@
       return window.innerHeight * 0.55;
     }
 
+    var beatTops = [];
+    function updateBeatOffsets() {
+      beatTops = beats.map(function (b) {
+        var top = 0, curr = b;
+        while (curr) { top += curr.offsetTop || 0; curr = curr.offsetParent; }
+        return top;
+      });
+    }
+    window.addEventListener('resize', updateBeatOffsets);
+    window.addEventListener('load', updateBeatOffsets);
+    setTimeout(updateBeatOffsets, 200);
+
     storyTick = function () {
       if (!seenOnce) return;
-      var l = line(), idx = 0;
-      for (var n = 0; n < beats.length; n++) if (beats[n].getBoundingClientRect().top <= l) idx = n;
+      if (!beatTops.length) updateBeatOffsets();
+      var scrollY = window.pageYOffset || window.scrollY || 0;
+      var l = line();
+      var targetY = scrollY + l;
+      var idx = 0;
+      for (var n = 0; n < beatTops.length; n++) if (beatTops[n] <= targetY) idx = n;
       show(idx);
     };
 
@@ -1073,10 +1149,24 @@
     }
   }
 
+  var readMax = 1, lastReadVal = -1;
+  function updateReadMax() {
+    readMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    window._pageScrollMax = readMax;
+  }
+  window.addEventListener('resize', updateReadMax);
+  window.addEventListener('load', updateReadMax);
+  setTimeout(updateReadMax, 200);
+
   function readProgress() {
-    var doc = document.documentElement;
-    var max = doc.scrollHeight - window.innerHeight;
-    root.style.setProperty('--read', max > 0 ? clamp(window.pageYOffset / max, 0, 1).toFixed(4) : '0');
+    var v = clamp((window.pageYOffset || window.scrollY || 0) / readMax, 0, 1);
+    var rounded = Math.round(v * 500) / 500;
+    if (rounded !== lastReadVal) {
+      lastReadVal = rounded;
+      var str = rounded.toFixed(3);
+      if (hdr) hdr.style.setProperty('--read', str);
+      else root.style.setProperty('--read', str);
+    }
   }
 
   var bands = [].slice.call(document.querySelectorAll('.band'));
@@ -1341,9 +1431,18 @@
     function held() { return hover || focusIn || touching || !onScreen || document.hidden; }
 
     /* ---- geometry: one step = one card plus the gap */
-    function gapPx() { return parseFloat(getComputedStyle(track).columnGap) || 0; }
-    function step() { return cards[0].offsetWidth + gapPx(); }
-    function perView() { return Math.max(1, Math.floor((view.clientWidth + gapPx() + 2) / step())); }
+    var cachedGap = 0, cachedStep = 0, cachedPerView = 1;
+    function updateMetrics() {
+      cachedGap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      cachedStep = (cards[0] ? cards[0].offsetWidth : 300) + cachedGap;
+      cachedPerView = Math.max(1, Math.floor(((view ? view.clientWidth : 300) + cachedGap + 2) / (cachedStep || 1)));
+    }
+    updateMetrics();
+    window.addEventListener('resize', updateMetrics);
+
+    function gapPx() { return cachedGap; }
+    function step() { return cachedStep || ((cards[0] ? cards[0].offsetWidth : 300) + cachedGap); }
+    function perView() { return cachedPerView; }
     function maxIndex() { return Math.max(0, N - perView()); }
     function leftOf(i) { return cards[i].offsetLeft - cards[0].offsetLeft; }
     function indexFromScroll() { return Math.max(0, Math.min(maxIndex(), Math.round(view.scrollLeft / step()))); }
@@ -1408,6 +1507,21 @@
       var want = Math.round(Math.min(44, Math.max(16, w * h / 9500)));
       f.ps = [];
       for (var i = 0; i < want; i++) f.ps.push(spawn(f, true));
+    }
+    function sizeVisibleFX() {
+      var toSize = FX.filter(function (f) { return f.ctx && f.vis; });
+      if (!toSize.length) return;
+      var dims = toSize.map(function (f) { return { w: f.card.offsetWidth, h: f.card.offsetHeight }; });
+      toSize.forEach(function (f, i) {
+        var d = dims[i];
+        if (d.w === f.w && d.h === f.h) return;
+        f.w = d.w; f.h = d.h;
+        f.cv.width = Math.round(d.w * DPR);
+        f.cv.height = Math.round(d.h * DPR);
+        var want = Math.round(Math.min(44, Math.max(16, d.w * d.h / 9500)));
+        f.ps = [];
+        for (var j = 0; j < want; j++) f.ps.push(spawn(f, true));
+      });
     }
     function draw(f, t, k) {
       var g = f.ctx;
@@ -1589,14 +1703,14 @@
         }
         kick();
       }, { threshold: 0.18 }).observe(pc);
-    } else { onScreen = true; FX.forEach(function (f) { f.vis = true; size(f); }); kick(); }
+    } else { onScreen = true; FX.forEach(function (f) { f.vis = true; }); sizeVisibleFX(); kick(); }
 
     window.addEventListener('resize', function () {
       buildDots();
       if (active > maxIndex()) active = maxIndex();
       view.scrollLeft = leftOf(active);
       paintDots();
-      FX.forEach(function (f) { if (f.vis) size(f); });
+      sizeVisibleFX();
     });
 
     buildDots(); paintDots();
@@ -1617,4 +1731,35 @@
   window.addEventListener('resize', function () { onScroll(); moveInk(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { publishHeader(); moveInk(); });
   onScroll();
+
+  /* ==================================================================
+     13. LOAD TIME INDICATOR — Live Navigation / Performance Timing
+     ================================================================== */
+  function measureLoadTime() {
+    var el = document.getElementById('load-ms');
+    if (!el) return;
+    function update() {
+      var t = 0;
+      var p = window.performance;
+      if (p && p.getEntriesByType) {
+        var nav = p.getEntriesByType('navigation')[0];
+        if (nav) {
+          if (nav.domContentLoadedEventEnd && nav.startTime) {
+            t = Math.round(nav.domContentLoadedEventEnd - nav.startTime);
+          } else if (nav.duration) {
+            t = Math.round(nav.duration);
+          }
+        }
+      }
+      if (!t && p && p.now) t = Math.round(p.now());
+      if (t > 0) {
+        el.textContent = t;
+        var wrap = document.getElementById('ftr-perf');
+        if (wrap) wrap.classList.add('ready');
+      }
+    }
+    if (document.readyState === 'complete') setTimeout(update, 30);
+    else window.addEventListener('load', function () { setTimeout(update, 30); });
+  }
+  measureLoadTime();
 })();
