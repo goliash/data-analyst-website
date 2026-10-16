@@ -1896,6 +1896,15 @@ html:not(.js) .resume-print-btn { display: none; }
   html.resume-pdf, html.resume-pdf body { height: auto !important; min-height: 0 !important; }
   html.resume-pdf body::before, html.resume-pdf body::after { display: none !important; }
   html.resume-pdf #resume-print-page { position: absolute; top: 0; left: 0; right: 0; width: auto; max-width: 100%; max-height: 100vh; object-fit: contain; }
+  /* In iPhone print, 100vh is the whole sheet, margins included, so the picture's blank bottom edge still
+     spilled onto page 2. Held to 9.3 × 7.2 in, it fits inside any phone's or printer's margins. */
+  html.resume-pdf #resume-print-page { max-height: 9.3in; max-width: 7.2in; page: auto; }   /* no named page: it forced extra page breaks in Chrome */
+  /* Safari on iPhone also prints a date/title header and a web-address footer inside the page, which
+     Chrome on iPhone doesn't; 8.4 × 6.5 in leaves room for them (about 88% of full size, still crisp). */
+  html.resume-pdf #resume-print-page { max-height: 8.4in; max-width: 6.5in; }
+  /* with the page margins taken away (main.js §9b), sit a little in from the paper's edge */
+  html.resume-pdf #resume-print-page { top: .3in; }
+  html.resume-pdf, html.resume-pdf body { overflow: hidden !important; }
 }
 /* the dictionary book in dark mode (16 Oct 2026, John: "too bright in dark mode"):
    the same open book, printed on dark paper with warm light ink. Print always uses the light book. */

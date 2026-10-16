@@ -717,14 +717,22 @@
     if (resumeNote) resumeNote.textContent = '';
     var opened = false;
     var onBefore = function () { opened = true; };
+    /* No page margins while the résumé prints (16 Oct 2026, John: "remove the Safari header and footer").
+       Browsers print their date / title / web-address lines inside the margins; with none, there is no
+       room and they're left off. Added only for this print, so Ctrl+P keeps its normal margins. */
+    var noMargins = null;
     var done = function () {
       root.classList.remove('resume-pdf');
+      if (noMargins && noMargins.parentNode) noMargins.parentNode.removeChild(noMargins);
       window.removeEventListener('beforeprint', onBefore);
       window.removeEventListener('afterprint', done);
     };
     function go() {
       window.addEventListener('beforeprint', onBefore);
       window.addEventListener('afterprint', done);
+      noMargins = document.createElement('style');
+      noMargins.textContent = '@page { size: letter; margin: 0; }';
+      document.head.appendChild(noMargins);
       root.classList.add('resume-pdf');
       try { window.print(); } catch (e) {}
       setTimeout(function () {
