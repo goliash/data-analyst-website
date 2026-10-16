@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Animal Crossing Villager Data Reports — John Goliash</title>
+<meta name="description" content="A playful data analyst dashboard: 391 Animal Crossing villagers, checked and charted in your browser. Then explore your own spreadsheet. Nothing is uploaded or stored.">
+<link rel="canonical" href="https://john.goliash.com/Animal-Crossing-Villager-Data-Reports">
+<meta name="author" content="John Goliash">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://john.goliash.com/Animal-Crossing-Villager-Data-Reports">
+<meta property="og:title" content="Animal Crossing Villager Data Reports — John Goliash">
+<meta property="og:description" content="391 villagers, checked and charted. Then try it with your own data. It all runs in your browser.">
+<meta property="og:image" content="https://john.goliash.com/img/og-neon.jpg">
+<meta property="og:image:secure_url" content="https://john.goliash.com/img/og-neon.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="John Goliash, data analyst in Northeast PA: a scanner beam checks a row of glowing bars, with Inventory accuracy, Fill rate, On-time shipping and Perfect orders ticked off.">
+<meta property="og:site_name" content="John Goliash">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Animal Crossing Villager Data Reports — John Goliash">
+<meta name="twitter:description" content="391 villagers, checked and charted. Then try it with your own data. It all runs in your browser.">
+<meta name="twitter:image" content="https://john.goliash.com/img/og-neon.jpg">
+<meta name="twitter:image:alt" content="John Goliash, data analyst in Northeast PA: glowing bars being checked by a scanner beam.">
+<link rel="icon" href="img/favicon.ico?i=1" sizes="32x32">
+<link rel="icon" id="fav-svg" href="img/favicon.svg?i=1" type="image/svg+xml">
+<link rel="icon" id="fav-png" href="img/favicon-32.png?i=1" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png?i=1" sizes="180x180">
+<link rel="manifest" href="site.webmanifest">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebPage",
+ "@id": "https://john.goliash.com/Animal-Crossing-Villager-Data-Reports#page",
+ "url": "https://john.goliash.com/Animal-Crossing-Villager-Data-Reports",
+ "name": "Animal Crossing Villager Data Reports — John Goliash",
+ "description": "A playful data analyst dashboard: 391 Animal Crossing villagers, checked and charted in your browser. Then explore your own spreadsheet. Nothing is uploaded or stored.",
+ "inLanguage": "en-US",
+ "dateModified": "2026-10-15",
+ "isPartOf": {
+  "@id": "https://john.goliash.com/#site"
+ },
+ "author": {
+  "@type": "Person",
+  "@id": "https://john.goliash.com/#john",
+  "name": "John Goliash",
+  "url": "https://john.goliash.com/"
+ },
+ "about": [
+  {
+   "@type": "Thing",
+   "name": "Data analysis"
+  },
+  {
+   "@type": "VideoGame",
+   "name": "Animal Crossing: New Horizons"
+  }
+ ],
+ "isBasedOn": [
+  {
+   "@type": "CreativeWork",
+   "name": "Animal Crossing villager analysis (Kaggle notebook)",
+   "url": "https://www.kaggle.com/code/jessemostipak/animal-crossing-villager-analysis"
+  }
+ ],
+ "hasPart": [
+  {
+   "@type": "WebApplication",
+   "name": "Explore your own data",
+   "applicationCategory": "BusinessApplication",
+   "operatingSystem": "Any modern web browser",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "description": "Open a CSV file and this page checks it and charts it in your browser. The file is never uploaded or stored."
+  }
+ ]
+}
+</script>
+<meta name="theme-color" content="#62d4a5" media="print"><!-- link-preview accent (Discord stripe); media="print" keeps browsers on the two below -->
+<meta name="theme-color" content="#F6F8F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F151C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#62d4a5" media="print"><!-- repeated last, for preview bots that keep the last value -->
+<script>
+(function(){var t,explicit=false;try{
+  var m=document.cookie.match(/(?:^|;\s*)theme=(dark|light)\b/);
+  if(m){t=m[1];explicit=true;}
+  else{var s=localStorage.getItem('theme');if(s==='dark'||s==='light'){t=s;explicit=true;}}
+}catch(e){}
+/* Motion is on for everyone; a "motion=off" cookie (disclosure §2) turns it off. */
+try{if(/(?:^|;\s*)motion=off\b/.test(document.cookie))document.documentElement.classList.add('no-motion');}catch(e){}
+if(!t){try{t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){t='dark';}}
+document.documentElement.setAttribute('data-theme',t);
+if(location.hostname==='www.john.goliash.com'){location.replace('https://john.goliash.com'+location.pathname+location.search+location.hash);}
+document.documentElement.classList.add('js');
+if(explicit){try{
+  var v='?i=1',a=document.getElementById('fav-svg'),b=document.getElementById('fav-png');
+  a.href=a.href.replace(/[^\/]*$/,'')+'favicon-'+t+'.svg'+v;
+  b.href=b.href.replace(/[^\/]*$/,'')+'favicon'+(t==='dark'?'-dark':'')+'-32.png'+v;
+}catch(e){}}
+})();
+</script>
+<!-- Google Tag Manager, your container GTM-XXXXXXX (TECHNICAL §4.20). The container
+     itself sends Google Analytics (G-XXXXXXXXXX), so the page does not load gtag.js as well
+     (that counted every visit twice). Nothing loads if the visitor switched analytics off on
+     disclosure.html (cookie analytics=off) or their browser sends Global Privacy Control. -->
+<script>
+(function(w,d){var GA='G-XXXXXXXXXX',GTM='GTM-XXXXXXX',off=/X{4}/.test(GTM);
+try{off=/(?:^|;\s*)analytics=off\b/.test(d.cookie)||navigator.globalPrivacyControl===true;}catch(e){}
+w['ga-disable-'+GA]=off;
+if(off)return;
+w.dataLayer=w.dataLayer||[];
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName('script')[0],j=d.createElement('script');
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNode.insertBefore(j,f);
+})(window,document);
+</script>
+<link rel="stylesheet" href="css/style.css?v=1">
+<link rel="stylesheet" href="css/analyst.css?v=1">
+</head>
+<body>
+<!-- Google Tag Manager (noscript): only for visitors with JavaScript off -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="site" class="site in no-intro">
+  <span class="rule rule-top" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="rule rule-bottom" aria-hidden="true"><i></i><i></i><i></i></span>
+
+  <header class="hdr">
+    <a class="brand" href="index.html" aria-label="John Goliash, home">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect class="m-c" x="7"  y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-s" x="16.5" y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-m" x="26" y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-line" x="5" y="31.5" width="30" height="2.5" rx="1.25"/>
+      </svg>
+      <span class="wm">John Goliash</span>
+    </a>
+
+    <button id="menu" class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">
+      <span class="menu-ico" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="menu-label">Menu</span>
+    </button>
+
+    <nav id="nav" class="nav" aria-label="Main">
+      <a href="index.html#resume">Résumé</a>
+      <a href="index.html#lab">KPI lab</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#build">How I built this</a>
+      <a href="index.html#contact" class="nav-cta">Contact</a>
+      <span class="nav-ink" aria-hidden="true"></span>
+    </nav>
+
+    <button id="theme" class="theme" type="button" aria-label="Switch theme"></button>
+  </header>
+
+  <main id="main" class="da">
+
+    <!-- ===================== INTRO ===================== -->
+    <section class="band da-hero" aria-labelledby="da-h1">
+      <p class="da-kicker">Data analyst &middot; a practice dashboard</p>
+      <h1 class="display da-h1" id="da-h1">391 villagers, checked and charted.</h1>
+      <p class="lede">
+        My job is to make sure the numbers are right, then make them easy to read. Here I do it for
+        fun, with every villager in Animal Crossing: New Horizons: who they are, who players want most,
+        and where the data disagrees with itself. Click any bar to filter the whole page. Then scroll
+        to the end and try it with your own spreadsheet.
+      </p>
+      <div class="da-jump">
+        <a class="btn btn-solid" href="#dash">See the dashboard</a>
+        <a class="btn btn-ghost" href="#how">How to use this page</a>
+      </div>
+      <p class="da-source">
+        Data: the villager file and the Nook Market wish list behind
+        <a href="https://www.kaggle.com/code/jessemostipak/animal-crossing-villager-analysis">Jesse Mostipak&rsquo;s Kaggle notebook</a>,
+        a fan tier list, and a second copy of the villagers from
+        <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-05-05">TidyTuesday</a>
+        (<a href="https://villagerdb.com/">VillagerDB</a>) to check it against. Every number on this page
+        is worked out by your own browser, live.
+      </p>
+      <img class="da-art" src="img/villager-island.svg" alt="" width="1280" height="800" decoding="async" fetchpriority="high">
+    </section>
+
+    <!-- ===================== HOW TO USE IT ===================== -->
+    <section class="band band-alt da-how-band" id="how" aria-labelledby="how-h">
+      <h2 class="h2" id="how-h">How to use this page</h2>
+      <p class="band-lede">Six steps, in plain words. You can&rsquo;t break anything, and nothing you type or open here is saved.</p>
+      <ol class="da-how">
+        <li>
+          <h3>Read the checks first</h3>
+          <p>A tick means that part of the data looks right. An <strong>!</strong> means look closer before you trust a number.</p>
+        </li>
+        <li>
+          <h3>Narrow it down</h3>
+          <p>Pick a species, personality, hobby, month or gender at the top of the dashboard. Every chart below changes to match.</p>
+        </li>
+        <li>
+          <h3>Tap a bar</h3>
+          <p>Tap a bar in the species, personality, hobby or birthday charts and the whole page filters to it. Tap it again, or press <strong>Clear filters</strong>, to go back.</p>
+        </li>
+        <li>
+          <h3>See the exact numbers</h3>
+          <p>Hover over or tap any bar for its number. Every chart also has <strong>Show as a table</strong> underneath.</p>
+        </li>
+        <li>
+          <h3>Have some fun</h3>
+          <p>Look up your birthday twin, press <strong>Shuffle</strong> to meet a villager, or search the full table at the bottom.</p>
+        </li>
+        <li>
+          <h3>Try your own data</h3>
+          <p>Save a spreadsheet as a CSV file and open it in <a href="#explore">Explore your own data</a>. It stays on your device.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===================== DATA CHECKS ===================== -->
+    <section class="band" id="checks" aria-labelledby="checks-h">
+      <h2 class="h2" id="checks-h">First, check the data</h2>
+      <p class="band-lede">Before I chart anything, I look for holes, and I check that the files really fit together. These checks ran a moment ago, on this page.</p>
+      <ul class="da-checks" id="da-checks">
+        <li class="da-check"><span class="da-check-ico" aria-hidden="true">&hellip;</span><span>Turn on JavaScript to run the checks and the dashboard.</span></li>
+      </ul>
+    </section>
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <section class="band band-alt" id="dash" aria-labelledby="dash-h">
+      <h2 class="h2" id="dash-h">The dashboard</h2>
+      <p class="band-lede">Pick a filter, or click a bar. Every chart, number and list below follows the same filter.</p>
+
+      <div class="da-filters" id="da-filters" role="group" aria-label="Filters">
+        <label class="da-field">
+          <span>Species</span>
+          <select id="f-species"><option value="">All</option></select>
+        </label>
+        <label class="da-field">
+          <span>Personality</span>
+          <select id="f-personality"><option value="">All</option></select>
+        </label>
+        <label class="da-field">
+          <span>Hobby</span>
+          <select id="f-hobby"><option value="">All</option></select>
+        </label>
+        <label class="da-field">
+          <span>Birthday month</span>
+          <select id="f-month"><option value="">All</option></select>
+        </label>
+        <div class="da-field">
+          <span id="f-gender-l">Gender</span>
+          <div class="da-seg" id="f-gender" role="radiogroup" aria-labelledby="f-gender-l">
+            <button type="button" role="radio" aria-checked="true" data-v="">All</button>
+            <button type="button" role="radio" aria-checked="false" data-v="female">Female</button>
+            <button type="button" role="radio" aria-checked="false" data-v="male">Male</button>
+          </div>
+        </div>
+        <button type="button" class="da-reset" id="f-reset">Clear filters</button>
+      </div>
+      <p class="da-showing" id="da-showing" aria-live="polite"></p>
+
+      <div class="da-kpis" id="da-kpis"></div>
+
+      <div class="da-grid">
+        <h3 class="da-sub">Who players want most</h3>
+
+        <article class="da-card da-wide" aria-labelledby="c-top-h">
+          <h3 id="c-top-h">Most wished-for villagers</h3>
+          <p class="da-card-sub">Nook Market&rsquo;s wish list, May 2020. #1 is the villager most players wanted.</p>
+          <div class="da-chart" id="c-top"></div>
+        </article>
+
+        <article class="da-card da-wide" aria-labelledby="c-pop-species-h">
+          <div class="da-card-top">
+            <h3 id="c-pop-species-h">Average popularity by species</h3>
+            <button type="button" class="da-more" id="pop-more" aria-expanded="false">Show all</button>
+          </div>
+          <p class="da-card-sub">Popularity score: 100 for the most wished-for villager, 0 for the least. Number of villagers in brackets. Each face is that species&rsquo; most wished-for villager.</p>
+          <p class="da-legend" aria-hidden="true"><span><i class="k1"></i>5 or more villagers</span><span><i class="k3"></i>Fewer than 5: read with care</span></p>
+          <div class="da-chart" id="c-pop-species"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-pop-pers-h">
+          <h3 id="c-pop-pers-h">Average popularity by personality</h3>
+          <p class="da-legend" aria-hidden="true"><span><i class="k1"></i>Female</span><span><i class="k2"></i>Male</span></p>
+          <div class="da-chart" id="c-pop-pers"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-pop-tier-h">
+          <h3 id="c-pop-tier-h">Do two popularity lists agree?</h3>
+          <p class="da-card-sub">Average wish-list score for each tier of a fan tier list.</p>
+          <div class="da-chart" id="c-pop-tier"></div>
+        </article>
+
+        <h3 class="da-sub">Who they are</h3>
+
+        <article class="da-card da-wide" aria-labelledby="c-species-h">
+          <div class="da-card-top">
+            <h3 id="c-species-h">Villagers by species</h3>
+            <button type="button" class="da-more" id="species-more" aria-expanded="false">Show all</button>
+          </div>
+          <p class="da-card-sub">Each face is that species&rsquo; most wished-for villager.</p>
+          <div class="da-chart" id="c-species"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-personality-h">
+          <h3 id="c-personality-h">Villagers by personality</h3>
+          <p class="da-legend" aria-hidden="true"><span><i class="k1"></i>Female</span><span><i class="k2"></i>Male</span></p>
+          <div class="da-chart" id="c-personality"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-hobby-h">
+          <h3 id="c-hobby-h">Villagers by hobby</h3>
+          <div class="da-chart" id="c-hobby"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-style-h">
+          <h3 id="c-style-h">Clothing styles</h3>
+          <p class="da-card-sub">Each villager has two style picks; a villager counts once per style.</p>
+          <div class="da-chart" id="c-style"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-color-h">
+          <h3 id="c-color-h">Favorite colors</h3>
+          <p class="da-card-sub">Each villager has two favorite colors; a villager counts once per color.</p>
+          <div class="da-chart" id="c-color"></div>
+        </article>
+
+        <h3 class="da-sub">Birthdays and words</h3>
+
+        <article class="da-card" aria-labelledby="c-month-h">
+          <h3 id="c-month-h">Birthdays by month</h3>
+          <div class="da-chart" id="c-month"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-songs-h">
+          <h3 id="c-songs-h">Top 10 favorite songs</h3>
+          <div class="da-chart" id="c-songs"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-phrase-h">
+          <h3 id="c-phrase-h">Catchphrase length</h3>
+          <div class="da-chart" id="c-phrase"></div>
+        </article>
+
+        <article class="da-card" aria-labelledby="c-letters-h">
+          <h3 id="c-letters-h">First letter of their names</h3>
+          <div class="da-chart" id="c-letters"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== BIRTHDAYS ===================== -->
+    <section class="band" id="birthdays" aria-labelledby="bd-h">
+      <h2 class="h2" id="bd-h">Birthday calendar</h2>
+      <p class="band-lede">Every square is a day of the year. The darker the green, the more villagers share it. Tap a square, or look up your own birthday.</p>
+
+      <form class="da-finder" id="bd-form">
+        <label class="da-field"><span>Month</span><select id="bd-month"></select></label>
+        <label class="da-field"><span>Day</span><select id="bd-day"></select></label>
+        <button class="btn btn-solid" type="submit">Find my birthday twin</button>
+      </form>
+      <div class="da-bd-out" id="bd-out" aria-live="polite"></div>
+
+      <div class="da-cal-wrap">
+        <div class="da-cal" id="bd-cal" role="grid" aria-label="Birthdays by day of the year"></div>
+        <p class="da-cal-key" aria-hidden="true">
+          <span><i class="s0"></i>None</span><span><i class="s1"></i>1 villager</span><span><i class="s2"></i>2 villagers</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== MEET A VILLAGER ===================== -->
+    <section class="band band-alt" id="meet" aria-labelledby="meet-h">
+      <h2 class="h2" id="meet-h">Meet a villager</h2>
+      <p class="band-lede">One at random, from whoever your filters leave in.</p>
+      <div class="da-meet">
+        <div class="da-vcard" id="meet-card" aria-live="polite"></div>
+        <button class="btn btn-solid da-shuffle" id="meet-shuffle" type="button">Shuffle</button>
+      </div>
+      <p class="da-pic-credit">Villager pictures are the game&rsquo;s own icons and photos, &copy; Nintendo, from the fan-made <a href="https://github.com/alexislours/ACNHAPI" rel="noopener">ACNH API</a>. Each one is found by the villager&rsquo;s ID in the data (the Filename column), not picked by hand.</p>
+    </section>
+
+    <!-- ===================== NOTES ===================== -->
+    <section class="band" id="notes" aria-labelledby="notes-h">
+      <h2 class="h2" id="notes-h">What the data says</h2>
+      <p class="band-lede">The findings I&rsquo;d put at the top of a report. Worked out from every villager, whatever the filters say.</p>
+      <ol class="da-notes" id="da-notes"></ol>
+    </section>
+
+    <!-- ===================== TABLE ===================== -->
+    <section class="band band-alt" id="villagers" aria-labelledby="tbl-h">
+      <h2 class="h2" id="tbl-h">Every villager</h2>
+      <p class="band-lede">The table behind every chart. Search it, or click a column name to sort.</p>
+      <label class="da-field da-search"><span>Search</span><input id="tbl-q" type="search" placeholder="Name, species, song, phrase&hellip;" autocomplete="off"></label>
+      <div class="da-table-wrap"><table class="da-table" id="tbl"></table></div>
+      <button type="button" class="btn btn-ghost da-more-rows" id="tbl-more" hidden>Show 25 more</button>
+    </section>
+
+    <!-- ===================== EXPLORE YOUR OWN DATA ===================== -->
+    <section class="band" id="explore" aria-labelledby="ex-h">
+      <h2 class="h2" id="ex-h">Explore your own data</h2>
+      <p class="band-lede">
+        Open a spreadsheet saved as CSV, and this page checks it and charts it the same way. Your file
+        never leaves your computer. It isn&rsquo;t uploaded, stored or saved, by me or anyone. Reload
+        the page and it&rsquo;s gone.
+      </p>
+
+      <ol class="ex-steps">
+        <li><strong>Open your file.</strong> Choose it, drop it in the box, or paste the cells.</li>
+        <li><strong>Read the checks.</strong> They point out blanks, copies and odd values.</li>
+        <li><strong>Make a chart.</strong> Pick what to <em>group by</em> (like Region), then what to <em>measure</em> (a count of rows, or the sum or average of a number column).</li>
+        <li><strong>Keep it.</strong> Press <strong>Download as CSV</strong> to save the chart&rsquo;s numbers, or <strong>Forget this data</strong> when you&rsquo;re done.</li>
+      </ol>
+      <details class="ex-help">
+        <summary>How do I save my spreadsheet as a CSV?</summary>
+        <ul>
+          <li><strong>Excel:</strong> File &rarr; Save As &rarr; choose <em>CSV UTF-8 (Comma delimited)</em>.</li>
+          <li><strong>Google Sheets:</strong> File &rarr; Download &rarr; <em>Comma-separated values (.csv)</em>.</li>
+          <li><strong>Numbers on a Mac:</strong> File &rarr; Export To &rarr; <em>CSV</em>.</li>
+          <li><strong>No file handy?</strong> Copy the cells in your spreadsheet, header row included, and use &ldquo;Or paste rows from a spreadsheet&rdquo; below.</li>
+        </ul>
+        <p>The first row should be the column names. One table per file works best.</p>
+      </details>
+
+      <div class="ex-drop" id="ex-drop">
+        <p class="ex-drop-h">Drop a CSV file here</p>
+        <p class="ex-drop-or">or</p>
+        <div class="ex-drop-btns">
+          <label class="btn btn-solid ex-pick">Choose a file<input id="ex-file" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain"></label>
+          <button class="btn btn-ghost" id="ex-sample" type="button">Try it with the villagers</button>
+        </div>
+        <details class="ex-paste">
+          <summary>Or paste rows from a spreadsheet</summary>
+          <textarea id="ex-text" rows="6" spellcheck="false" placeholder="Copy cells in Excel or Google Sheets, header row included, and paste them here."></textarea>
+          <button class="btn btn-ghost" id="ex-paste-go" type="button">Use pasted rows</button>
+        </details>
+        <p class="ex-msg" id="ex-msg" role="status"></p>
+      </div>
+
+      <div class="ex-out" id="ex-out" hidden>
+        <div class="ex-head">
+          <p class="ex-name" id="ex-name"></p>
+          <button class="da-reset" id="ex-clear" type="button">Forget this data</button>
+        </div>
+
+        <h3 class="ex-h3">Data checks</h3>
+        <ul class="da-checks" id="ex-checks"></ul>
+
+        <h3 class="ex-h3">Columns</h3>
+        <div class="da-table-wrap"><table class="da-table ex-cols" id="ex-cols"></table></div>
+
+        <h3 class="ex-h3">Make a chart</h3>
+        <div class="da-filters ex-build" role="group" aria-label="Chart builder">
+          <label class="da-field"><span>Group by</span><select id="ex-group"></select></label>
+          <label class="da-field"><span>Measure</span><select id="ex-measure"></select></label>
+          <label class="da-field"><span>Sort</span>
+            <select id="ex-sort"><option value="desc">Biggest first</option><option value="asc">Smallest first</option><option value="az">A to Z</option></select>
+          </label>
+          <label class="da-field"><span>Show</span>
+            <select id="ex-top"><option value="10">Top 10</option><option value="20" selected>Top 20</option><option value="50">Top 50</option><option value="0">All</option></select>
+          </label>
+          <label class="da-field"><span>Only rows where</span><select id="ex-fcol"></select></label>
+          <label class="da-field"><span>is</span><select id="ex-fval" disabled><option value="">(any value)</option></select></label>
+        </div>
+        <div class="da-kpis ex-kpis" id="ex-kpis"></div>
+        <article class="da-card">
+          <div class="da-card-top">
+            <h3 id="ex-chart-h">Chart</h3>
+            <button type="button" class="da-more" id="ex-download">Download as CSV</button>
+          </div>
+          <div class="da-chart" id="ex-chart"></div>
+        </article>
+
+        <h3 class="ex-h3">The rows</h3>
+        <label class="da-field da-search"><span>Search</span><input id="ex-q" type="search" placeholder="Search every column&hellip;" autocomplete="off"></label>
+        <div class="da-table-wrap"><table class="da-table" id="ex-rows"></table></div>
+        <p class="da-showing" id="ex-rows-note"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ftr">
+    <div class="ftr-in">
+      <div class="ftr-col ftr-about">
+        <p class="ftr-wm">John Goliash</p>
+        <p>Data analyst for manufacturing and warehouse operations in Northeast PA. I make sure the numbers are right before anyone acts on them.</p>
+      </div>
+      <nav class="ftr-col" aria-label="Footer">
+        <h2 class="ftr-h">On this site</h2>
+        <a href="index.html#resume">Résumé</a>
+        <a href="index.html#lab">KPI lab</a>
+        <a href="Animal-Crossing-Villager-Data-Reports.html" aria-current="page">Villager data reports</a>
+        <a href="index.html#words">Dictionary</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#build">How I built this</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <div class="ftr-col">
+        <h2 class="ftr-h">The fine print</h2>
+        <a href="disclosure.html">Full disclosure</a>
+        <a href="files/download/Example_Resume.pdf" download>Résumé (PDF)</a>
+        <p class="ftr-promise">No ads · No selling your data · Analytics you can switch off</p>
+      </div>
+    </div>
+    <div class="ftr-base">
+      <p>&copy; 2026 John Goliash. Villager data from the Kaggle Nookplaza dataset, Nook Market and VillagerDB via TidyTuesday. Villager pictures &copy; Nintendo, via the ACNH API. Animal Crossing is a trademark of Nintendo; this is a fan analysis.</p>
+    </div>
+  </footer>
+</div>
+
+<script src="js/main.js?v=1"></script>
+<script src="js/villagers-data.js?v=1"></script>
+<script src="js/analyst.js?v=1"></script>
+</body>
+</html>

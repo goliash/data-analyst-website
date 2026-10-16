@@ -1,0 +1,37 @@
+# John Goliash
+
+> John Goliash is a data analyst in Northeast Pennsylvania. More than 10 years turning ERP, inventory and shipping data into reports people trust, including about six years in manufacturing. He makes sure the numbers are right before anyone acts on them.
+
+Everything on this site is public, and AI assistants are welcome to read, quote and summarise it. Facts about John's work history come from his résumé and the interview answers on the home page. To contact him, use the form at https://john.goliash.com/#contact.
+
+## Main pages
+
+- [Home](https://john.goliash.com/): who John is, six interview answers in his own words, "What I bring to an operations team", his résumé, the KPI lab, a plain-English dictionary of data terms, his projects and a contact form.
+- [Résumé (PDF)](https://john.goliash.com/files/Example_Resume.pdf): the full résumé. Also at https://john.goliash.com/resume.
+- [Animal Crossing Villager Data Reports](https://john.goliash.com/Animal-Crossing-Villager-Data-Reports): an interactive analysis of 391 Animal Crossing villagers from a Kaggle dataset, with data checks, popularity findings and a tool to chart your own CSV file in the browser (nothing is uploaded or stored).
+- [Unsubscribe](https://john.goliash.com/unsubscribe): stop emails from John, or ask for your messages to be deleted.
+- [Full disclosure](https://john.goliash.com/disclosure): what the site collects, its cookies, Google Analytics and how to switch it off, the motion switch, and how AI was used to build the site.
+
+## Skills and tools (from the résumé)
+
+- Inventory reconciliation and inventory accuracy; KPI reporting for stock levels, backorders, open orders and on-time shipping
+- ERP and business systems: Sage, JobBOSS, Infor SalesLogix, Knowledge Sync (scheduled report emails)
+- Data tools: SQL Server, Microsoft Access, Excel, Crystal Reports; learning Power BI
+- Web: hand-written HTML, CSS and JavaScript on Cloudflare Pages and Workers, Google Apps Script
+
+## Projects
+
+- [Win Twin (wint.win)](https://wint.win/): John's tech consulting business in Northeast PA: databases, reports, cloud services and security.
+- [John Cyou (john.cyou)](https://john.cyou/): web design and in-home tech support in Northeast PA.
+- [MixYZ (mixyz.xyz)](https://mixyz.xyz/): a one-page site about mixing two technologies into something new.
+- [Oliver's Universe (OliUni.com)](https://oliuni.com/): a gallery for the nature photographer Oliver Norden.
+- [Slice of Heaven (SliceOfH.com)](https://www.sliceofh.com/): a menu website for a pizza place in Mocanaqua, PA.
+- [Spirit Image Band (SpiritImageBand.com)](https://www.spiritimageband.com/): a website for the band Spirit Image.
+- [Newport Township (NewportTownship.com)](https://www.newporttownship.com/): the Newport Township Community Organization in Luzerne County, PA.
+- A self-hosted AI agent on John's home server (Proxmox, Ubuntu, Tailscale), reachable only from his own devices.
+
+## Optional
+
+- [Sitemap](https://john.goliash.com/sitemap.xml)
+- [LinkedIn](https://www.linkedin.com/in/goliash)
+- [GitHub](https://github.com/goliash): open-source code for this site, KPI Lab and the villager data reports

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Full disclosure — John Goliash</title>
+<meta name="description" content="What john.goliash.com collects, what it doesn't, the cookies it uses, Google Analytics and how to switch it off, and how AI was used to build it.">
+<link rel="canonical" href="https://john.goliash.com/disclosure">
+<meta name="author" content="John Goliash">
+<meta name="robots" content="index, follow, max-snippet:-1">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="John Goliash">
+<meta property="og:url" content="https://john.goliash.com/disclosure">
+<meta property="og:title" content="Full disclosure — John Goliash">
+<meta property="og:description" content="What this site collects, what it doesn't, the cookies it uses, and the switches for motion and Google Analytics.">
+<meta property="og:image" content="https://john.goliash.com/img/og-neon.jpg">
+<meta property="og:image:secure_url" content="https://john.goliash.com/img/og-neon.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="John Goliash, data analyst in Northeast PA: a scanner beam checks a row of glowing bars, with Inventory accuracy, Fill rate, On-time shipping and Perfect orders ticked off.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Full disclosure — John Goliash">
+<meta name="twitter:description" content="What this site collects, what it doesn't, the cookies it uses, and the switches for motion and Google Analytics.">
+<meta name="twitter:image" content="https://john.goliash.com/img/og-neon.jpg">
+<meta name="twitter:image:alt" content="John Goliash, data analyst in Northeast PA: glowing bars being checked by a scanner beam.">
+<link rel="icon" href="img/favicon.ico?i=1" sizes="32x32">
+<link rel="icon" id="fav-svg" href="img/favicon.svg?i=1" type="image/svg+xml">
+<link rel="icon" id="fav-png" href="img/favicon-32.png?i=1" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png?i=1" sizes="180x180">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#62d4a5" media="print"><!-- link-preview accent (Discord stripe); media="print" keeps browsers on the two below -->
+<meta name="theme-color" content="#F6F8F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F151C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#62d4a5" media="print"><!-- repeated last, for preview bots that keep the last value -->
+<script>
+(function(){var t,explicit=false;try{
+  var m=document.cookie.match(/(?:^|;\s*)theme=(dark|light)\b/);
+  if(m){t=m[1];explicit=true;}
+  else{var s=localStorage.getItem('theme');if(s==='dark'||s==='light'){t=s;explicit=true;}}
+}catch(e){}
+/* Motion is on for everyone; a "motion=off" cookie (disclosure §2) turns it off. */
+try{if(/(?:^|;\s*)motion=off\b/.test(document.cookie))document.documentElement.classList.add('no-motion');}catch(e){}
+if(!t){try{t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){t='dark';}}
+document.documentElement.setAttribute('data-theme',t);
+if(location.hostname==='www.john.goliash.com'){location.replace('https://john.goliash.com'+location.pathname+location.search+location.hash);}
+document.documentElement.classList.add('js');
+if(explicit){try{
+  var v='?i=1',a=document.getElementById('fav-svg'),b=document.getElementById('fav-png');
+  a.href=a.href.replace(/[^\/]*$/,'')+'favicon-'+t+'.svg'+v;
+  b.href=b.href.replace(/[^\/]*$/,'')+'favicon'+(t==='dark'?'-dark':'')+'-32.png'+v;
+}catch(e){}}
+})();
+</script>
+<!-- Google Tag Manager, your container GTM-XXXXXXX (TECHNICAL §4.20). The container
+     itself sends Google Analytics (G-XXXXXXXXXX), so the page does not load gtag.js as well
+     (that counted every visit twice). Nothing loads if the visitor switched analytics off on
+     disclosure.html (cookie analytics=off) or their browser sends Global Privacy Control. -->
+<script>
+(function(w,d){var GA='G-XXXXXXXXXX',GTM='GTM-XXXXXXX',off=/X{4}/.test(GTM);
+try{off=/(?:^|;\s*)analytics=off\b/.test(d.cookie)||navigator.globalPrivacyControl===true;}catch(e){}
+w['ga-disable-'+GA]=off;
+if(off)return;
+w.dataLayer=w.dataLayer||[];
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName('script')[0],j=d.createElement('script');
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNode.insertBefore(j,f);
+})(window,document);
+</script>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+<!-- Google Tag Manager (noscript): only for visitors with JavaScript off -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="site" class="site in no-intro">
+  <span class="rule rule-top" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="rule rule-bottom" aria-hidden="true"><i></i><i></i><i></i></span>
+
+  <header class="hdr">
+    <a class="brand" href="index.html" aria-label="John Goliash, home">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect class="m-c" x="7"  y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-s" x="16.5" y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-m" x="26" y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-line" x="5" y="31.5" width="30" height="2.5" rx="1.25"/>
+      </svg>
+      <span class="wm">John Goliash</span>
+    </a>
+
+    <button id="menu" class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">
+      <span class="menu-ico" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="menu-label">Menu</span>
+    </button>
+
+    <nav id="nav" class="nav" aria-label="Main">
+      <a href="index.html#resume">Résumé</a>
+      <a href="index.html#lab">KPI lab</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#build">How I built this</a>
+      <a href="index.html#contact" class="nav-cta">Contact</a>
+      <span class="nav-ink" aria-hidden="true"></span>
+    </nav>
+
+    <button id="theme" class="theme" type="button" aria-label="Switch theme"></button>
+  </header>
+
+  <main id="main" class="doc">
+    <a class="doc-back" href="index.html">&larr; Back to the front page</a>
+
+    <h1>Full disclosure</h1>
+    <p class="doc-sub">Last updated October 15, 2026. What this site collects, what it doesn&rsquo;t,
+      and the things most sites bury. If anything here is unclear, tell me and I&rsquo;ll fix the page.</p>
+
+    <div class="doc-note">
+      <p><strong>The short version.</strong> There are no ads, and I never sell or share your data. I use
+      Google Analytics, through Google Tag Manager, to count visits, so I can see which pages people read. You can
+      <a href="#settings">switch it off below</a>, along with motion. Apart from Google&rsquo;s analytics and
+      Tag Manager code, nothing on this site loads from anyone else&rsquo;s server. Not even fonts. Google Analytics sets its
+      own cookies. My cookies only remember your settings, and only if you change one. The count sheet, the
+      KPI lab and the Data analyst page run in your browser and send nothing. If you open your own
+      file there, it is never uploaded or stored. If you use the contact form, it collects some
+      technical details along with your message. That part is worth reading.</p>
+    </div>
+
+    <h2>1. What the contact form collects</h2>
+    <p>
+      When you press send, your name, email, company (if you give one) and message go to me. Two
+      sets of details go along with them. Nothing is collected when the page just loads. Most contact
+      forms collect these quietly. I&rsquo;d rather list them.
+    </p>
+
+    <h3>Read from your connection (dependable)</h3>
+    <p>My host reports these about the message itself. They can&rsquo;t be faked from your end, and they are never read out of what you typed:</p>
+    <div class="doc-wrap">
+      <table>
+        <thead><tr><th>What</th><th>Why it&rsquo;s there</th></tr></thead>
+        <tbody>
+          <tr><td>IP address</td><td>Shows roughly where a message came from, and lets me block a source if spam floods in.</td></tr>
+          <tr><td>City, state, country, ZIP area</td><td>A rough guess from the IP, not your device&rsquo;s location. It&rsquo;s often off by quite a bit.</td></tr>
+          <tr><td>Timezone</td><td>So I don&rsquo;t reply at three in the morning your time.</td></tr>
+          <tr><td>Internet provider</td><td>Which provider or company network the message came through.</td></tr>
+          <tr><td>Data center</td><td>Which of my host&rsquo;s data centers handled it. Only useful for fixing problems.</td></tr>
+          <tr><td>Timestamp</td><td>When it arrived, in UTC.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Reported by your browser (take with salt)</h3>
+    <p>Your browser offers these on its own. You can change or turn off any of them, and nothing breaks if you do:</p>
+    <div class="doc-wrap">
+      <table>
+        <thead><tr><th>What</th><th>Why it&rsquo;s there</th></tr></thead>
+        <tbody>
+          <tr><td>Device type, platform, browser</td><td>If you tell me something looks broken, this saves a round of &ldquo;what are you using?&rdquo;</td></tr>
+          <tr><td>Screen and window size</td><td>Same reason. Most &ldquo;it looks wrong&rdquo; reports get solved by this one line.</td></tr>
+          <tr><td>Timezone and UTC offset</td><td>Double-checks the one above.</td></tr>
+          <tr><td>Languages</td><td>So I reply in one you read.</td></tr>
+          <tr><td>CPU cores, memory, touch support</td><td>Context if you&rsquo;re telling me something is slow.</td></tr>
+          <tr><td>Referring page</td><td>How you found the site. Blank if you typed the address.</td></tr>
+          <tr><td>User agent string</td><td>The long version of the browser line.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Being straight with you</h3>
+    <p>
+      Put together, that&rsquo;s a fairly clear picture of your computer. I collect it because it helps
+      me answer faster, and it helps me tell a real person from the steady drip of spam. I won&rsquo;t
+      pretend it&rsquo;s nothing.
+    </p>
+    <p>
+      Your message arrives as an email in my inbox. A copy is also saved as one row in a private Google
+      Sheet owned by the same account, so messages are easy to find later. I don&rsquo;t build a
+      profile from any of it, and I don&rsquo;t sell it or share it. Ask me to delete your message and I
+      will, and I&rsquo;ll tell you when it&rsquo;s done.
+    </p>
+    <p>
+      <strong>In plain terms:</strong> your email address is never sold, rented, shared with advertisers or
+      disclosed to anyone else for their own purposes. You can unsubscribe at any time, using the link in
+      every email I send or the standing <a href="unsubscribe.html">unsubscribe page</a>, and you can ask me to
+      delete your data at any time. The unsubscribe page saves your email address, the time, your reason if
+      you give one, and whether you asked me to delete your messages. It doesn&rsquo;t save your IP address or
+      device details.
+    </p>
+    <p>
+      If you&rsquo;d rather not send any of that, email me directly. The address is on the front page,
+      next to the form. A regular email carries only what your own mail app sends, which is a lot less.
+    </p>
+
+    <h2>2. Cookies, storage and Google Analytics</h2>
+    <div class="setting" id="settings">
+      <div class="setting-txt">
+        <p class="setting-h" id="motion-h">Motion and animation</p>
+        <p class="setting-d" id="motion-d">The carousel, the particles, counting numbers and the opening story.
+          On for everyone. If movement on screen bothers you, switch it off here and it stays off on every page.</p>
+      </div>
+      <button type="button" class="switch" id="motion-switch" role="switch" aria-checked="true"
+        aria-labelledby="motion-h" aria-describedby="motion-d">
+        <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+        <span class="switch-state" aria-hidden="true">On</span>
+      </button>
+    </div>
+    <p class="setting-note" id="motion-note" aria-live="polite"></p>
+    <div class="setting" id="analytics">
+      <div class="setting-txt">
+        <p class="setting-h" id="ga-h">Google Analytics and Tag Manager</p>
+        <p class="setting-d" id="ga-d">Counts visits so I can see which pages people read. Google Tag Manager is the
+          Google tool that holds these tags. On unless you switch it off. Off means neither is loaded, and
+          Google&rsquo;s cookies are deleted.</p>
+      </div>
+      <button type="button" class="switch" id="ga-switch" role="switch" aria-checked="true"
+        aria-labelledby="ga-h" aria-describedby="ga-d">
+        <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+        <span class="switch-state" aria-hidden="true">On</span>
+      </button>
+    </div>
+    <p class="setting-note" id="ga-note" aria-live="polite"></p>
+    <ul>
+      <li><strong>Light or dark mode.</strong> Click the button at the top and your choice is saved in a
+        cookie that lasts a year. Never touch the button and nothing is saved.</li>
+      <li><strong>Motion.</strong> Switch it off above and a cookie (<code>motion=off</code>) remembers that
+        for a year. Switch it back on and the cookie is deleted. Leave it alone and nothing is saved.</li>
+      <li><strong>Google Analytics.</strong> Google&rsquo;s code, loaded through Google Tag Manager
+        (container <code>GTM-XXXXXXX</code>), sets two cookies, <code>_ga</code> and
+        <code>_ga_XXXXXXXXXX</code>, that last up to two years. They let Google tell a new visit from a
+        return visit. Switch analytics off above and a cookie (<code>analytics=off</code>) remembers that for a
+        year.</li>
+      <li><strong>The opening animation.</strong> For this visit only, your browser remembers that you
+        already saw it, so it doesn&rsquo;t play again on every page. That uses session storage. It
+        isn&rsquo;t a cookie, it never leaves your computer, and it&rsquo;s gone when you close the tab.</li>
+    </ul>
+    <p>That&rsquo;s the whole list. No advertising, no other tracking pixels, no session recording.</p>
+    <h3>What Google Analytics sees</h3>
+    <p>
+      Which pages you open and for how long, roughly where you are (the city, which Google works out from
+      your connection; Google says it doesn&rsquo;t keep the address itself), your device and browser, and the
+      page that sent you here. Google also notices clicks on links that leave this site, file downloads,
+      scrolling to the bottom of a page, and when a form is started or sent. It never sees what you type in a
+      form or the files you open on the Data analyst page.
+    </p>
+    <p>
+      I see totals and trends, not you. I don&rsquo;t use it for ads, and I don&rsquo;t combine it with
+      anything else. Google handles the data under
+      <a href="https://policies.google.com/privacy" rel="noopener">its own privacy policy</a>. If your browser
+      sends Global Privacy Control, analytics stays off on its own.
+    </p>
+
+    <h2>3. The count sheet and the KPI lab</h2>
+    <p>
+      Both run entirely in your browser. The count sheet uses made-up items and numbers, not data from
+      any company I have worked for. The KPI lab starts with sample numbers too. Nothing you type in it
+      is sent anywhere. If you choose <strong>File &gt; Save</strong>, your numbers are kept in your
+      browser&rsquo;s own storage on your device (not a cookie, never sent) until you choose
+      <strong>Edit &gt; Delete saved numbers</strong>. The desktop version keeps them on your computer
+      the same way and never goes online.
+    </p>
+
+    <h2>4. The Data analyst page and your own data</h2>
+    <p>
+      The villager dashboard uses public fan data about the game Animal Crossing: New Horizons: the
+      villager list and the Nook Market wish list from a Kaggle notebook, a fan tier list, and a second
+      copy of the villagers from VillagerDB, shared by the TidyTuesday project. None of it is about a
+      real person. The villager pictures are the game&rsquo;s own icons and photos, which belong to
+      Nintendo. They come from the fan-made ACNH API project and are stored on this site, so loading
+      them doesn&rsquo;t contact anyone else.
+    </p>
+    <p>
+      <strong>I do not store your data.</strong> When you open a file, paste rows or drop a CSV into
+      &ldquo;Explore your own data,&rdquo; your own browser reads it and draws the charts. The file is
+      never uploaded, not to me, not to my host and not to anyone else. It isn&rsquo;t saved in a
+      cookie or in your browser&rsquo;s storage either. Nothing about it is logged. Reload or close the
+      page, or press &ldquo;Forget this data,&rdquo; and it&rsquo;s gone. The only thing that can leave
+      the page is a CSV of a chart that you choose to download, and that goes to your own downloads
+      folder.
+      Google Analytics, if it&rsquo;s on, records only that you visited the page, never your data.
+    </p>
+
+    <h2>5. The résumé PDF</h2>
+    <p>
+      The résumé you can download here is the same one I send with job applications, minus my phone
+      number. It does show my email address, on purpose: a résumé needs one. Everything on it is true,
+      and the dates match the web version on the front page.
+    </p>
+
+    <h2>6. How AI was used</h2>
+    <p>
+      I built this website with Claude Opus 5.5, an AI helper from Anthropic. I told it what I wanted,
+      then read every page, checked every claim about my work and fixed what was wrong. See
+      <a href="index.html#build">&ldquo;How I built this&rdquo;</a> on the front page.
+    </p>
+    <p>Your messages are read by me. I don&rsquo;t paste them into outside AI tools.</p>
+
+    <h2>7. Things worth saying</h2>
+    <ul>
+      <li><strong>No sponsors.</strong> There are no ads and no affiliate links. Product names on this
+        site, like Crystal Reports or Sage, are tools I have used at work. Nobody paid to be named.</li>
+      <li><strong>The links to my other sites</strong> go to sites I built and run. They each have their
+        own disclosure page.</li>
+      <li><strong>The numbers at the top of the front page</strong> are my own: years in data and
+        reporting, years in manufacturing, and the automated reports I keep running every day.</li>
+      <li><strong>Who runs this.</strong> This site is run by John Goliash, in Northeast PA.</li>
+    </ul>
+
+    <h2>8. Getting in touch about this page</h2>
+    <p>
+      Corrections, deletion requests or a question about anything above: use the
+      <a href="index.html#contact">contact form</a> or email me directly. I&rsquo;ll answer.
+    </p>
+  </main>
+
+  <footer class="ftr">
+    <div class="ftr-in">
+      <div class="ftr-col ftr-about">
+        <p class="ftr-wm">John Goliash</p>
+        <p>Data analyst for manufacturing and warehouse operations in Northeast PA. I make sure the numbers are right before anyone acts on them.</p>
+      </div>
+      <nav class="ftr-col" aria-label="Footer">
+        <h2 class="ftr-h">On this site</h2>
+        <a href="index.html#resume">Résumé</a>
+        <a href="index.html#lab">KPI lab</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#build">How I built this</a>
+        <a href="index.html#contact">Contact</a>
+        <a class="ftr-replay" href="index.html#replay">Replay the intro</a>
+      </nav>
+      <div class="ftr-col">
+        <h2 class="ftr-h">The fine print</h2>
+        <a href="disclosure.html" aria-current="page">Full disclosure</a>
+        <a href="files/download/Example_Resume.pdf" download>Résumé (PDF)</a>
+        <p class="ftr-promise">No ads · No selling your data · Analytics you can switch off</p>
+      </div>
+    </div>
+    <div class="ftr-base">
+      <p>&copy; 2026 John Goliash. The count sheet and the KPI lab use sample data.</p>
+    </div>
+  </footer>
+</div>
+
+<script src="js/main.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "John Goliash",
+  "short_name": "J. Goliash",
+  "description": "Data analyst for manufacturing and warehouse operations in Northeast PA. I make sure the numbers are right before anyone acts on them.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0F151C",
+  "theme_color": "#0F151C",
+  "icons": [
+    { "src": "img/icon-192.png?i=1", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icon-512.png?i=1", "sizes": "512x512", "type": "image/png" },
+    { "src": "img/icon-maskable-512.png?i=1", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "img/favicon.svg?i=1", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

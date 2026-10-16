@@ -1,0 +1,8 @@
+# The old Firebase site linked its résumé at /resume/... Keep those links working.
+/resume        /files/Example_Resume.pdf  301
+/resume/*      /files/Example_Resume.pdf  301
+/resume.pdf    /files/Example_Resume.pdf  301
+
+# The villager page was renamed on 16 Oct 2026. Keep the old address working.
+/data-analyst       /Animal-Crossing-Villager-Data-Reports  301
+/data-analyst.html  /Animal-Crossing-Villager-Data-Reports  301

@@ -1,0 +1,19 @@
+{
+  "id": "/kpi-lab",
+  "name": "KPI Lab",
+  "short_name": "KPI Lab",
+  "description": "14 inventory, ordering, shipping and plant-floor measures, each with its formula and a plain-words lesson. By John Goliash. Works offline.",
+  "start_url": "/kpi-lab",
+  "scope": "/kpi-lab",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#0f151c",
+  "theme_color": "#12375f",
+  "categories": ["business", "productivity", "education"],
+  "icons": [
+    { "src": "img/kpi-lab-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/kpi-lab-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "img/kpi-lab-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

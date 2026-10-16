@@ -1,0 +1,451 @@
+/* =====================================================================
+   KPI Lab: the app window (TECHNICAL §4.23). Loaded after style.css by
+   index.html, and by the desktop app (apps/kpi-lab-desktop). The lab's
+   own pieces (fields, result, bar, lesson cards) are styled in style.css;
+   this file makes them one connected window: title bar, a classic
+   File / Edit / Measures / View / Help menu bar, body and status bar.
+   On phones the window takes over the screen as you scroll to it.
+   ===================================================================== */
+.kapp {
+  position: relative; margin-top: 2rem; background: var(--surface);
+  border: 1px solid var(--steel); border-radius: 12px;
+  box-shadow: var(--shadow), 0 34px 70px -46px rgba(0, 0, 0, .7);
+}
+
+/* ---------- title bar ---------- */
+.kapp-bar {
+  display: flex; align-items: center; gap: .55rem; min-height: 42px; padding: 0 .4rem 0 .75rem;
+  border-radius: 11px 11px 0 0; color: #fff;
+  background: linear-gradient(90deg, #12375f 0%, #1f5d97 56%, #0b6a4b 100%);
+}
+:root[data-theme="dark"] .kapp-bar { background: linear-gradient(90deg, #142d48 0%, #1c4670 56%, #0c5640 100%); }
+.kapp-ico svg { display: block; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .35)); }
+.kapp-title { flex: 1; min-width: 0; margin: 0; font: 600 .95rem/1.2 var(--sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+.kapp-title b { font-weight: 800; }
+.kapp-dash { opacity: .6; }
+.kapp-win {
+  display: grid; place-items: center; flex: none; width: 34px; height: 30px; padding: 0; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, .38); border-radius: 6px; background: rgba(255, 255, 255, .13); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), inset 0 -1px 0 rgba(0, 0, 0, .22);
+  transition: background-color .15s, border-color .15s;
+}
+.kapp-win:hover { background: rgba(255, 255, 255, .26); }
+.kapp-win:active { box-shadow: inset 0 1px 2px rgba(0, 0, 0, .35); }
+.kapp-win:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.kapp-x:hover { background: #c42b1c; border-color: #e0564a; }
+.kapp-x { display: none; }
+.kapp.is-takeover .kapp-x, .kapp.is-full .kapp-x, .kapp.is-desktop .kapp-x { display: grid; }
+.kapp.is-takeover .kapp-max, .kapp.is-desktop .kapp-max { display: none; }
+
+/* ---------- title bar and menu bar stay in view under the site header ---------- */
+.kapp-chrome { position: sticky; top: var(--hdr-h, 72px); z-index: 7; border-radius: 11px 11px 0 0; }
+.kapp.is-takeover .kapp-chrome, .kapp.is-desktop .kapp-chrome, .kapp:fullscreen .kapp-chrome { position: relative; top: 0; border-radius: 0; }
+
+/* ---------- menu bar ---------- */
+.kapp-menus { position: relative; z-index: 6; display: flex; gap: 2px; padding: 3px 4px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.km { position: relative; }
+.km-top {
+  min-height: 34px; padding: 0 .8rem; border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+  background: none; color: var(--ink); font: 600 .93rem/1 var(--sans);
+}
+.km-top u { text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
+.km-top:hover { background: var(--surface); border-color: var(--line); }
+.km-top[aria-expanded="true"] { background: var(--sys); color: var(--btn-fg); border-color: transparent; }
+.km-top:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.km-pop {
+  position: absolute; left: 0; top: calc(100% + 3px); min-width: 17rem; max-height: min(calc(100vh - 9rem), 44rem);
+  overflow-y: auto; overscroll-behavior: contain; padding: 4px;
+  background: var(--surface); border: 1px solid var(--steel); border-radius: 8px;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, .26), 0 20px 44px -18px rgba(0, 0, 0, .65);
+}
+.km-pop[hidden] { display: none; }
+/* a big, easy-to-grab scroll bar when a menu is taller than the screen */
+.km-pop::-webkit-scrollbar { width: 28px; }
+/* up and down arrows at the ends of the bar (16 Oct 2026, John) — Chrome, Edge, Brave, Safari on a computer */
+.km-pop::-webkit-scrollbar-button:single-button {
+  display: block; height: 28px; background-color: var(--surface-2); background-repeat: no-repeat;
+  background-position: center; background-size: 13px; border-left: 1px solid var(--line);
+}
+.km-pop::-webkit-scrollbar-button:single-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 2.5 11 9H1z' fill='%2394a3b4'/%3E%3C/svg%3E"); border-radius: 0 7px 0 0; border-bottom: 1px solid var(--line); }
+.km-pop::-webkit-scrollbar-button:single-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 9.5 11 3H1z' fill='%2394a3b4'/%3E%3C/svg%3E"); border-radius: 0 0 7px 0; border-top: 1px solid var(--line); }
+:root[data-theme="light"] .km-pop::-webkit-scrollbar-button:single-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 2.5 11 9H1z' fill='%235a6878'/%3E%3C/svg%3E"); }
+:root[data-theme="light"] .km-pop::-webkit-scrollbar-button:single-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 9.5 11 3H1z' fill='%235a6878'/%3E%3C/svg%3E"); }
+.km-pop::-webkit-scrollbar-button:single-button:vertical:decrement:hover { background-color: var(--sys); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 2.5 11 9H1z' fill='%23ffffff'/%3E%3C/svg%3E"); }
+.km-pop::-webkit-scrollbar-button:single-button:vertical:increment:hover { background-color: var(--sys); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 9.5 11 3H1z' fill='%23ffffff'/%3E%3C/svg%3E"); }
+.km-pop::-webkit-scrollbar-button:single-button:vertical:decrement:active,
+.km-pop::-webkit-scrollbar-button:single-button:vertical:increment:active { background-size: 10px; }
+.km-pop::-webkit-scrollbar-button:vertical:start:increment, .km-pop::-webkit-scrollbar-button:vertical:end:decrement { display: none; }
+.km-pop::-webkit-scrollbar-track { background: var(--surface-2); border-left: 1px solid var(--line); }
+.km-pop::-webkit-scrollbar-thumb { min-height: 64px; background: var(--muted); border: 3px solid var(--surface-2); border-radius: 12px; }
+.km-pop::-webkit-scrollbar-thumb:hover, .km-pop::-webkit-scrollbar-thumb:active { background: var(--sys); }
+@supports not selector(::-webkit-scrollbar) { .km-pop { scrollbar-width: auto; scrollbar-color: var(--steel) var(--surface-2); } }
+.km-i {
+  display: grid; grid-template-columns: 1.35rem minmax(0, 1fr) auto; align-items: center; gap: .25rem;
+  width: 100%; min-height: 36px; padding: 0 .65rem 0 .35rem; border: 0; border-radius: 5px; cursor: pointer;
+  background: none; color: var(--ink); font: 500 .93rem/1.2 var(--sans); text-align: left;
+}
+.km-i:hover, .km-i:focus { outline: none; background: var(--sys); color: var(--btn-fg); }
+.km-i:disabled { color: var(--muted); cursor: default; opacity: .7; }
+.km-i:disabled:hover, .km-i:disabled:focus { background: none; color: var(--muted); }
+.km-i[hidden] { display: none; }
+.km-i kbd { font: 500 .74rem/1 var(--mono); color: inherit; opacity: .72; padding-left: 1rem; }
+.km-tick { text-align: center; font-weight: 800; }
+.km-i[aria-checked="true"] .km-tick::before { content: "\2713"; }
+.km-i[role="menuitemradio"][aria-checked="true"] .km-tick::before { content: "\25CF"; font-size: .72em; }
+.km-sep { margin: 4px 6px; border: 0; border-top: 1px solid var(--line); }
+.km-h { margin: .55rem .6rem .2rem 1.7rem; font: 700 .68rem/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.km-h:first-child { margin-top: .35rem; }
+html:not(.js) .kapp-menus, html:not(.js) .lab-change, html:not(.js) .kapp-win { display: none; }
+
+/* ---------- the body: inputs, result and lesson cards as one surface ---------- */
+.kapp-body { position: relative; }
+.kapp .lab { margin: 0; gap: 0; }
+.kapp .lab-in, .kapp .lab-out { border: 0; border-radius: 0; box-shadow: none; background: none; padding: 1.25rem 1.4rem 1.35rem; }
+.kapp .lab-out::before { top: 1.3rem; bottom: 1.3rem; }
+.lab-head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; }
+.lab-cat { margin: 0; font: 700 .74rem/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lab-change {
+  min-height: 40px; padding: 0 .85rem; border: 1px solid var(--ghost-line); border-radius: 8px; cursor: pointer;
+  background: var(--surface-2); color: var(--ink); font: 600 .9rem/1 var(--sans); white-space: nowrap;
+}
+.lab-change:hover { border-color: var(--match); }
+.lab-change:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.kapp .lab-def { margin-top: .75rem; }
+.kapp .lab-teach { margin: 0; gap: 0; border-top: 1px solid var(--line); }
+.kapp .lab-teach > div { border: 0; border-radius: 0; box-shadow: none; background: var(--surface-2); padding: 1rem 1.25rem 1.15rem; }
+.kapp.no-lessons .lab-teach { display: none; }
+.kapp-end { display: none; }
+@media (min-width: 981px) {
+  .kapp .lab { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+  .kapp .lab-out { border-left: 1px solid var(--line); }
+  .kapp .lab-teach > div + div { border-left: 1px solid var(--line); }
+}
+@media (max-width: 980px) {
+  .kapp .lab-out { border-top: 1px solid var(--line); }
+}
+
+/* ---------- status bar ---------- */
+.kapp-status {
+  display: flex; justify-content: space-between; gap: 1rem; min-height: 30px; padding: .35rem .8rem;
+  border-top: 1px solid var(--line); border-radius: 0 0 11px 11px; background: var(--surface-2);
+  font: 500 .74rem/1.35 var(--mono); color: var(--ink-dim);
+}
+.kapp-status span:last-child { color: var(--muted); text-align: right; }
+
+/* ---------- a small dialog window inside the app ---------- */
+.kapp-dlg { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1rem; background: rgba(5, 8, 13, .5); border-radius: 11px; }
+.kapp-dlg[hidden] { display: none; }
+.kapp-dlg-win {
+  width: min(31rem, 100%); max-height: calc(100% - 1rem); overflow: auto; background: var(--surface);
+  border: 1px solid var(--steel); border-radius: 10px; box-shadow: 6px 6px 0 rgba(0, 0, 0, .3), 0 30px 60px -20px rgba(0, 0, 0, .7);
+}
+.kapp-dlg-bar { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .35rem .4rem .35rem .9rem; color: #fff; border-radius: 9px 9px 0 0; background: linear-gradient(90deg, #12375f, #1f5d97); }
+.kapp-dlg-bar p { margin: 0; font: 700 .95rem/1.2 var(--sans); }
+.kapp-dlg .kapp-dlg-x { display: grid; }
+.kapp-dlg-b { padding: 1rem 1.15rem .3rem; color: var(--ink); font-size: .96rem; }
+.kapp-dlg-b p { margin: 0 0 .75rem; }
+.kapp-dlg-b ol { margin: 0 0 .75rem; padding-left: 1.25rem; display: grid; gap: .45rem; }
+.kapp-dlg-b code { font-family: var(--mono); font-size: .88em; background: var(--surface-2); padding: .1rem .35rem; border-radius: 4px; }
+.kapp-dlg-b .btn { margin: .2rem 0 .4rem; }
+.kapp-dlg-foot { display: flex; justify-content: flex-end; padding: .3rem 1.15rem 1rem; }
+
+/* ---------- full screen (desktop) and the desktop app ---------- */
+.kapp:fullscreen, .kapp.is-desktop { display: flex; flex-direction: column; margin: 0; border: 0; border-radius: 0; background: var(--bg); }
+.kapp:fullscreen .kapp-bar, .kapp.is-desktop .kapp-bar, .kapp:fullscreen .kapp-status, .kapp.is-desktop .kapp-status { border-radius: 0; }
+.kapp:fullscreen .kapp-body, .kapp.is-desktop .kapp-body { flex: 1; min-height: 0; overflow-y: auto; background: var(--surface); }
+.kapp.is-desktop { position: fixed; inset: 0; }
+
+/* ---------- phones: the take-over ---------- */
+.kapp.is-takeover {
+  position: fixed; inset: 0; z-index: 140; margin: 0; display: flex; flex-direction: column;
+  border: 0; border-radius: 0; box-shadow: none; background: var(--bg);
+}
+.kapp.is-takeover .kapp-bar { border-radius: 0; min-height: 50px; }
+.kapp.is-takeover .kapp-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: var(--surface); }
+.kapp.is-takeover .kapp-status { border-radius: 0; padding-bottom: calc(.35rem + env(safe-area-inset-bottom, 0px)); }
+.kapp.is-takeover .kapp-dlg { border-radius: 0; }
+.kapp.is-takeover .kapp-end { display: grid; justify-items: center; gap: .6rem; padding: 1.3rem 1rem 1.8rem; border-top: 1px solid var(--line); background: var(--surface); }
+.kapp-pull { margin: 0; font-size: .86rem; color: var(--muted); opacity: calc(.45 + var(--pull, 0) * .55); transform: translateY(calc(var(--pull, 0) * -8px)); transition: color .2s; }
+.kapp.pulling .kapp-pull { color: var(--match); font-weight: 650; }
+.kapp-continue { min-height: 46px; }
+html:not(.no-motion) .kapp.pop { animation: kapp-pop .45s cubic-bezier(.2, 1.15, .4, 1) both; }
+/* on a wide screen the take-over fills it; the content stays a readable width */
+@media (min-width: 981px) {
+  .kapp.is-takeover .lab, .kapp.is-takeover .lab-teach, .kapp.is-takeover .kapp-end { max-width: 1280px; margin-left: auto; margin-right: auto; }
+  .kapp.is-takeover .kapp-body { background: var(--bg); }
+  .kapp.is-takeover .lab { background: var(--surface); border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .kapp.is-takeover .lab-teach { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .kapp.is-takeover .kapp-end { background: transparent; border-top: 0; }
+}
+@keyframes kapp-pop { from { transform: translateY(7%) scale(.93); opacity: .35; border-radius: 18px; } to { transform: none; opacity: 1; border-radius: 0; } }
+
+@media (max-width: 700px) {
+  .kapp { margin-top: 1.4rem; }
+  .kapp-bar { min-height: 50px; }
+  .kapp-title { font-size: .92rem; }
+  .kapp-win { width: 44px; height: 40px; }
+  .kapp-menus { gap: 0; padding: 3px; justify-content: space-between; }
+  .km { position: static; }
+  .km-top { min-height: 44px; padding: 0 .55rem; font-size: .92rem; }
+  .km-pop { left: 4px; right: 4px; min-width: 0; top: calc(100% + 2px); max-height: calc(100vh - 10rem); max-height: calc(100dvh - 9rem); }
+  .km-i { min-height: 44px; font-size: .96rem; }
+  .km-i kbd { display: none; }
+  .kapp .lab-in, .kapp .lab-out { padding: 1rem 1rem 1.1rem; }
+  .lab-change { min-height: 44px; }
+  /* the lesson cards stack in the window: no sideways scrolling */
+  .kapp .lab-teach { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; grid-auto-columns: auto; overflow: visible; margin: 0; padding: 0; scroll-snap-type: none; }
+  .kapp .lab-teach > div + div { border-top: 1px solid var(--line); }
+  .kapp-status { font-size: .7rem; }
+  .kapp-status span:last-child { display: none; }
+}
+
+/* ---------- File > Print prints only the app, on light paper ---------- */
+@media print {
+  html.kapp-print body { position: static !important; top: auto !important; }
+  html.kapp-print body > *:not(#site):not(#main) { display: none !important; }
+  html.kapp-print #site > *:not(#main) { display: none !important; }
+  html.kapp-print #main > *:not(#lab) { display: none !important; }
+  html.kapp-print #lab > *:not(#kapp) { display: none !important; }
+  html.kapp-print #lab { display: block !important; padding: 0 !important; }   /* a normal print is the résumé and hides #lab */
+  html.kapp-print .site { opacity: 1 !important; }
+  html.kapp-print .kapp { position: static !important; display: block !important; height: auto !important; border: 1px solid #999; box-shadow: none; margin: 0; }
+  html.kapp-print .kapp-body { overflow: visible !important; }
+  html.kapp-print .kapp-menus, html.kapp-print .kapp-win, html.kapp-print .kapp-end,
+  html.kapp-print .lab-change, html.kapp-print .kapp-dlg { display: none !important; }
+  html.kapp-print .kapp-bar { background: none !important; color: #000 !important; border-bottom: 2px solid #000; text-shadow: none; }
+  html.kapp-print .lab-input input { border-color: #999; }
+}
+
+/* the takeover keeps the site's top menu: lock the page behind it (16 Oct 2026) */
+html.kapp-open { overflow: hidden; overscroll-behavior: none; }
+html.kapp-open body { overflow: visible; } /* keeps the sticky top menu working while the page is locked */
+.kapp-links a { font-weight: 600; }
+
+/* ---------- Measures menu: a definition card slides out beside the item (16 Oct 2026) ----------
+   John: "little definitions of each that slide out so you know the term you are selecting before even
+   opening it". Desktop: one card, beside the row you point at or arrow to; it glides from row to row.
+   Phones and touch screens: no hover, so the definition sits under each name instead. */
+.km-hint {                                   /* in every item, for screen readers only */
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.km-pop { z-index: 2; }                      /* the card slides out from under the menu */
+.km-fly {
+  --row-top: 4px; --row-h: 36px;
+  position: absolute; z-index: 1; width: 17.5rem; min-height: calc(var(--row-h) + 8px);
+  padding: .8rem .95rem .75rem 1.15rem;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--steel); border-radius: 0 8px 8px 0;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, .26), 0 22px 44px -20px rgba(0, 0, 0, .6);
+  pointer-events: none; opacity: 0; transform: translateX(-14px);
+}
+.km-fly[hidden] { display: none; }
+.km-fly.in { opacity: 1; transform: none; transition: opacity .14s ease-out, transform .22s cubic-bezier(.2, .9, .3, 1); }
+.km-fly.in.glide { transition: top .14s cubic-bezier(.3, .7, .3, 1); }
+/* a blue tab level with the highlighted row: the row seems to run on into the card */
+.km-fly::before {
+  content: ""; position: absolute; left: -1px; top: calc(var(--row-top) + 3px); width: 4px; height: calc(var(--row-h) - 2px);
+  background: var(--sys); border-radius: 0 3px 3px 0; transition: top .14s cubic-bezier(.3, .7, .3, 1);
+}
+.km-fly[data-side="l"] { border-radius: 8px 0 0 8px; padding: .8rem 1.15rem .75rem .95rem; transform: translateX(14px); }
+.km-fly[data-side="l"].in { transform: none; }
+.km-fly[data-side="l"]::before { left: auto; right: -1px; border-radius: 3px 0 0 3px; }
+.km-fly p { margin: 0; }
+.km-fly-g { font: 700 .66rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.km-fly-n { margin-top: .35rem !important; font: 700 1.08rem/1.15 var(--display); font-stretch: 87.5%; color: var(--ink); }
+.km-fly.is-current .km-fly-n::after {
+  content: "open now"; margin-left: .45rem; padding: .12rem .4rem; border-radius: 4px; vertical-align: .12em;
+  font: 700 .62rem/1 var(--sans); letter-spacing: .06em; text-transform: uppercase;
+  background: var(--sys-wash); color: var(--sys);
+}
+.km-fly-d { margin-top: .4rem !important; font: 400 .9rem/1.45 var(--sans); color: var(--ink-dim); }
+.km-fly-f {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+  margin-top: .7rem !important; padding-top: .55rem; border-top: 1px dashed var(--line);
+  font: 500 .72rem/1.2 var(--sans); color: var(--muted);
+}
+.km-fly-tag { padding: .2rem .45rem; border-radius: 999px; font-weight: 700; white-space: nowrap; }
+.km-fly-tag[data-k="high"] { background: var(--match-wash); color: var(--match); }
+.km-fly-tag[data-k="low"]  { background: var(--count-wash); color: var(--count); }
+.km-fly-tag[data-k="plan"] { background: var(--sys-wash);   color: var(--sys); }
+.km-fly-go { white-space: nowrap; }
+.km-fly-go kbd {
+  display: inline-block; margin-right: .2rem; padding: .08rem .3rem; border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 4px; font: 600 .66rem/1.2 var(--mono); color: var(--ink-dim); background: var(--surface-2);
+}
+/* animation: the words rise in one after another; the tag pops; its arrow nudges; a light sweep on open */
+.km-fly { overflow: hidden; }
+.km-fly.swap .km-fly-g, .km-fly.swap .km-fly-n, .km-fly.swap .km-fly-d, .km-fly.swap .km-fly-go {
+  animation: kfly-rise .32s cubic-bezier(.2, .8, .3, 1) both;
+}
+.km-fly.swap .km-fly-n  { animation-delay: .035s; }
+.km-fly.swap .km-fly-d  { animation-delay: .07s; }
+.km-fly.swap .km-fly-go { animation-delay: .12s; }
+.km-fly.swap .km-fly-tag { animation: kfly-pop .42s cubic-bezier(.3, 1.6, .5, 1) .1s both; }
+@keyframes kfly-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes kfly-pop  { 0% { opacity: 0; transform: scale(.6); } 100% { opacity: 1; transform: none; } }
+.km-fly-tag { display: inline-flex; align-items: center; gap: .3rem; }
+.km-fly-tag::before { display: inline-block; font-size: .8rem; line-height: 1; }
+.km-fly-tag[data-k="high"]::before { content: "\2191"; animation: kfly-up 1.6s ease-in-out .5s infinite; }
+.km-fly-tag[data-k="low"]::before  { content: "\2193"; animation: kfly-down 1.6s ease-in-out .5s infinite; }
+.km-fly-tag[data-k="plan"]::before { content: "\25F7"; animation: kfly-tick 2.4s steps(4) .5s infinite; }
+@keyframes kfly-up   { 0%, 100% { transform: none; } 50% { transform: translateY(-2px); } }
+@keyframes kfly-down { 0%, 100% { transform: none; } 50% { transform: translateY(2px); } }
+@keyframes kfly-tick { to { transform: rotate(360deg); } }
+.km-fly::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(105deg, transparent 30%, color-mix(in srgb, var(--sys) 22%, transparent) 50%, transparent 70%);
+  transform: translateX(-100%);
+}
+.km-fly.opening::after { animation: kfly-sweep .75s cubic-bezier(.3, .6, .3, 1) .08s; }
+@keyframes kfly-sweep { 0% { opacity: 1; transform: translateX(-100%); } 100% { opacity: 1; transform: translateX(100%); } }
+html.no-motion .km-fly, html.no-motion .km-fly.in, html.no-motion .km-fly::before { transition: none; transform: none; }
+html.no-motion .km-fly *, html.no-motion .km-fly *::before, html.no-motion .km-fly::after { animation: none !important; }
+
+/* rows: on desktop they don't exist as boxes; the "?" and the card under each row are for phones */
+.km-row { display: contents; }
+.km-info, .km-peek { display: none; }
+
+/* phones and touch screens: no slide-out; a "?" beside each measure slides a card open under it */
+@media (max-width: 900px), (hover: none) {
+  .km-fly { display: none !important; }
+  .km-row { display: grid; grid-template-columns: minmax(0, 1fr) 46px; align-items: center; }
+  .km-row .km-i { grid-column: 1; }
+  .km-info {
+    display: grid; place-items: center; grid-column: 2; justify-self: center;
+    width: 32px; height: 32px; padding: 0; border-radius: 50%; cursor: pointer;
+    border: 1.5px solid var(--line); background: var(--surface-2); color: var(--ink-dim);
+    font: 800 .9rem/1 var(--sans); transition: background .2s, color .2s, border-color .2s, transform .3s cubic-bezier(.3, 1.4, .5, 1);
+  }
+  .km-info::before { content: "?"; }
+  .km-row.is-peek .km-info { background: var(--sys); border-color: var(--sys); color: var(--btn-fg); transform: rotate(180deg); }
+  .km-row.is-peek .km-info::before { content: "\2013"; }
+  .km-info:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  /* the card under the row: its height opens smoothly (grid rows 0fr → 1fr) */
+  .km-peek { display: grid; grid-column: 1 / -1; grid-template-rows: 0fr; transition: grid-template-rows .28s cubic-bezier(.2, .8, .3, 1); }
+  .km-row.is-peek .km-peek { grid-template-rows: 1fr; }
+  .km-peek-in {
+    min-height: 0; overflow: hidden; margin: 0 .35rem 0 1.65rem;
+    border-left: 3px solid var(--sys); border-radius: 0 0 8px 0;
+    background: color-mix(in srgb, var(--sys) 8%, var(--surface));
+    padding: 0 .85rem; opacity: 0; transition: opacity .2s, padding .28s cubic-bezier(.2, .8, .3, 1), margin .28s;
+  }
+  .km-row.is-peek .km-peek-in { padding: .7rem .85rem .75rem; margin-bottom: .35rem; opacity: 1; }
+  .km-peek p { margin: 0; }
+  .km-peek-d { font: 400 .9rem/1.45 var(--sans); color: var(--ink-dim); }
+  .km-peek-f { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .6rem !important; font: 500 .74rem/1.2 var(--sans); }
+  .km-peek-open {
+    min-height: 36px; padding: 0 .9rem; border: 0; border-radius: 6px; cursor: pointer;
+    background: var(--sys); color: var(--btn-fg); font: 700 .86rem/1 var(--sans);
+  }
+  .km-peek-open span { display: inline-block; margin-left: .15rem; transition: transform .2s; }
+  .km-peek-open:active span { transform: translateX(3px); }
+  .km-peek.swap .km-peek-d { animation: kfly-rise .32s cubic-bezier(.2, .8, .3, 1) .08s both; }
+  .km-peek.swap .km-fly-tag { animation: kfly-pop .42s cubic-bezier(.3, 1.6, .5, 1) .16s both; }
+  .km-peek.swap .km-peek-open { animation: kfly-rise .32s cubic-bezier(.2, .8, .3, 1) .2s both; }
+  html.no-motion .km-peek, html.no-motion .km-peek-in, html.no-motion .km-info { transition: none; }
+  html.no-motion .km-peek *, html.no-motion .km-peek *::before { animation: none !important; }
+}
+
+/* ---------- the Measures menu's own scroll bar (16 Oct 2026) ----------
+   Built in the page, because phones won't let a site style their scroll bars. Restyled the same day
+   (John: "look modern with the interface, the blue to green gradient, icons and width that match the top
+   bar icons"): the bar wears the title bar's gradient running top to bottom, its ▲ and ▼ are the same
+   buttons as the title bar's □ and × (34 × 30, 44 × 40 on phones), and the box is a frosted pill. */
+#km-measures-pop:not([hidden]) { display: flex; align-items: stretch; overflow: hidden; padding: 0; }
+.km-list {
+  position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: 4px; scrollbar-width: none;
+}
+.km-list::-webkit-scrollbar { display: none; }
+.km-rail {
+  --bw: 34px; --bh: 30px; --pad: 4px;
+  display: none; flex: 0 0 calc(var(--bw) + var(--pad) * 2); flex-direction: column; gap: var(--pad);
+  padding: var(--pad); color: #fff; touch-action: none; user-select: none; -webkit-user-select: none;
+  background: linear-gradient(180deg, #12375f 0%, #1f5d97 56%, #0b6a4b 100%);
+  border-left: 1px solid rgba(0, 0, 0, .25);
+}
+:root[data-theme="dark"] .km-rail { background: linear-gradient(180deg, #142d48 0%, #1c4670 56%, #0c5640 100%); }
+.has-rail .km-rail { display: flex; }
+/* the arrow buttons: exactly the title bar's buttons */
+.km-rail-b {
+  display: grid; place-items: center; flex: 0 0 var(--bh); height: var(--bh); cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, .38); border-radius: 6px; background: rgba(255, 255, 255, .13); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), inset 0 -1px 0 rgba(0, 0, 0, .22);
+  transition: background-color .15s, border-color .15s, opacity .2s, transform .12s;
+}
+.km-rail-b svg { display: block; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .35)); transition: transform .15s; }
+.km-rail-b:hover { background: rgba(255, 255, 255, .26); }
+.km-rail-up:hover svg { transform: translateY(-1px); }
+.km-rail-dn:hover svg { transform: translateY(1px); }
+.km-rail-b.down { background: rgba(255, 255, 255, .32); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .35); transform: scale(.96); }
+.km-rail-b.off { opacity: .4; cursor: default; }
+.km-rail-b.off:hover { background: rgba(255, 255, 255, .13); }
+.km-rail-b.off svg { transform: none; }
+/* the track: a soft groove; the box: a frosted pill that widens when you reach for it */
+.km-rail-t {
+  position: relative; flex: 1 1 auto; min-height: 36px; cursor: pointer;
+  border-radius: 999px; background: rgba(0, 0, 0, .18); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
+  margin: 0 calc((var(--bw) - 12px) / 2); transition: margin .18s;
+}
+.km-rail:hover .km-rail-t, .km-rail-t:has(.drag) { margin: 0 calc((var(--bw) - 20px) / 2); }
+.km-rail-th {
+  position: absolute; left: 0; right: 0; top: 0; min-height: 30px; cursor: grab; border-radius: 999px;
+  background: rgba(255, 255, 255, .55); border: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
+  transition: background-color .15s;
+}
+.km-rail-th:hover { background: rgba(255, 255, 255, .72); }
+.km-rail-th.drag { cursor: grabbing; background: #fff; }
+/* phones: the title bar's bigger buttons */
+@media (max-width: 900px), (hover: none) {
+  .km-rail { --bw: 44px; --bh: 40px; }
+  .km-rail-b svg { width: 16px; height: 16px; }
+  .km-rail-t { margin: 0 calc((var(--bw) - 16px) / 2); }
+  .km-rail-th { min-height: 44px; }
+}
+html.no-motion .km-rail *, html.no-motion .km-rail-t { transition: none !important; }
+@media (min-width: 901px) and (hover: hover) { #km-measures-pop.has-rail { min-width: calc(17rem + 42px); } }
+
+/* ---------- "Install app" in the status bar (kpi-lab.html, when the browser can install it) ---------- */
+.kapp-install {
+  display: inline-flex; align-items: center; gap: .35rem; margin-right: .6rem; padding: .22rem .65rem; cursor: pointer;
+  border: 0; border-radius: 999px; color: #fff; font: 700 .74rem/1.2 var(--sans);
+  background: linear-gradient(90deg, #1f5d97, #0b6a4b); box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset;
+  animation: kinst-in .4s cubic-bezier(.3, 1.4, .5, 1) both;
+}
+.kapp-install[hidden] { display: none; }
+.kapp-install:hover { filter: brightness(1.12); }
+.kapp-install:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@keyframes kinst-in { from { opacity: 0; transform: translateY(4px) scale(.9); } to { opacity: 1; transform: none; } }
+html.no-motion .kapp-install { animation: none; }
+/* the install steps and download cards in the dialog */
+.kdl-grid { display: grid; gap: .6rem; margin: .8rem 0; }
+.kdl {
+  display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: .15rem .7rem; align-items: center;
+  padding: .7rem .8rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2);
+}
+.kdl.is-you { border-color: var(--sys); box-shadow: 0 0 0 1px var(--sys) inset; }
+.kdl-ico { grid-row: span 2; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 8px; color: #fff; background: linear-gradient(135deg, #1f5d97, #0b6a4b); }
+.kdl-n { margin: 0; font-weight: 700; }
+.kdl-n small { margin-left: .35rem; padding: .05rem .4rem; border-radius: 999px; font: 700 .64rem/1.4 var(--sans); letter-spacing: .05em; text-transform: uppercase; background: var(--sys-wash); color: var(--sys); }
+.kdl-links { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: 0; font-size: .88rem; }
+.kdl-links a { font-weight: 600; }
+.kdl-note { margin: .2rem 0 0; font-size: .82rem; color: var(--muted); grid-column: 2; }
+.kinst-steps { margin: .6rem 0 0; padding-left: 1.3rem; }
+.kinst-steps li { margin: .3rem 0; }
+.kinst-key { display: inline-block; padding: 0 .35rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; font: 600 .8em/1.5 var(--mono); background: var(--surface-2); }
+/* thinner and a little see-through (16 Oct 2026, John); solid again while you use it */
+.km-rail { --bw: 26px; --bh: 26px; --pad: 3px; opacity: .82; transition: opacity .2s; }
+.km-rail:hover, .km-rail:has(.drag), .km-rail:has(.down) { opacity: 1; }
+.km-rail-b { border-radius: 5px; }
+.km-rail-b svg { width: 12px; height: 12px; }
+.km-rail-t { margin: 0 calc((var(--bw) - 8px) / 2); }
+.km-rail:hover .km-rail-t, .km-rail-t:has(.drag) { margin: 0 calc((var(--bw) - 14px) / 2); }
+.km-rail-th { min-height: 26px; }
+@media (min-width: 901px) and (hover: hover) { #km-measures-pop.has-rail { min-width: calc(17rem + 32px); } }
+@media (max-width: 900px), (hover: none) {
+  .km-rail { --bw: 34px; --bh: 34px; }
+  .km-rail-b svg { width: 14px; height: 14px; }
+  .km-rail-t { margin: 0 calc((var(--bw) - 10px) / 2); }
+  .km-rail-th { min-height: 36px; }
+}

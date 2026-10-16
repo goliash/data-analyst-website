@@ -1,0 +1,55 @@
+/* ==========================================================================
+   john.goliash.com — the unsubscribe page (unsubscribe.html)
+   Loaded AFTER style.css. Only what the shared .doc / .form / .row / .btn
+   styles do not already cover. Colours come from style.css tokens, so light
+   and dark mode both work with no extra rules here.
+   ========================================================================== */
+
+/* The form is a comfortable reading width, not the full 74ch of the page. */
+.unsub-form { max-width: 34rem; margin: 1.6rem 0 2.2rem; }
+.unsub-form[hidden] { display: none; }          /* .form sets display:grid, which would beat [hidden] */
+.unsub-form textarea { min-height: 112px; }
+
+/* Without JavaScript the form could only send the address in the page URL,
+   so it is not shown at all. The <noscript> note says what to do instead. */
+html:not(.js) .unsub-form { display: none; }
+.unsub-noscript { margin: 0 0 1.4rem; }
+
+.unsub-hint { font-size: .86rem; color: var(--muted); }
+
+/* The tick box. The whole row is the label, so the tap target is the full
+   width and at least 48px tall; the box itself is 24px. */
+.unsub-check {
+  display: flex; align-items: flex-start; gap: .85rem;
+  min-height: 48px; padding: .3rem 0; cursor: pointer;
+  color: var(--ink-dim); font-weight: 600; font-size: .98rem; line-height: 1.4;
+}
+.unsub-check input {
+  flex: none; width: 24px; height: 24px; margin: .1rem 0 0;
+  accent-color: var(--match); cursor: pointer;
+}
+.unsub-check input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.unsub-check-txt small {
+  display: block; margin-top: .15rem; font-weight: 400; font-size: .86rem; color: var(--muted);
+}
+
+/* The "back" link in style.css is 40px tall; this page keeps to 44px. */
+.doc-back { min-height: 44px; }
+
+/* Confirmation panel, shown in place of the form. */
+.unsub-done { max-width: 34rem; margin: 1.6rem 0 2.2rem; }
+.unsub-done[hidden] { display: none; }
+.unsub-done:focus { outline: none; }            /* focused from script so a screen reader reads it */
+.unsub-done h2 { margin: 0 0 .7rem; padding: 0; border: 0; }
+.unsub-done strong { overflow-wrap: anywhere; color: var(--ink); }
+.unsub-done .btn { margin-top: .6rem; }
+
+/* The status line grows to two lines on a phone; keep it from jumping. */
+.unsub-form .status { min-height: 1.4rem; }
+.unsub-form .fallback { justify-self: start; }
+
+@media (max-width: 640px) {
+  .unsub-form, .unsub-done { max-width: none; }
+  .unsub-form .fallback { justify-self: stretch; }
+  .unsub-done .btn { width: 100%; }
+}

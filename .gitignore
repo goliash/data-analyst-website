@@ -1,0 +1,12 @@
+.env
+.wrangler/
+deploy-last.log
+.deploy-version
+node_modules/
+dist/
+_site/
+__pycache__/
+.DS_Store
+Thumbs.db
+~$*
+img/villagers/

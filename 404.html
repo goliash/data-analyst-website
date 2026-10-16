@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Page not found — John Goliash</title>
+<meta name="robots" content="noindex">
+<!-- Every path on this page is ROOT-relative (/css/…, /img/…). Pages serves
+     the 404 at whatever depth the bad URL was, so a relative path would
+     break the moment someone mistypes /a/b/c (TECHNICAL_BASELINE R-05). -->
+<link rel="icon" href="/img/favicon.ico?i=1" sizes="32x32">
+<link rel="icon" id="fav-svg" href="/img/favicon.svg?i=1" type="image/svg+xml">
+<link rel="icon" id="fav-png" href="/img/favicon-32.png?i=1" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png?i=1" sizes="180x180">
+<meta name="theme-color" content="#F6F8F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F151C" media="(prefers-color-scheme: dark)">
+<script>
+(function(){var t,explicit=false;try{
+  var m=document.cookie.match(/(?:^|;\s*)theme=(dark|light)\b/);
+  if(m){t=m[1];explicit=true;}
+  else{var s=localStorage.getItem('theme');if(s==='dark'||s==='light'){t=s;explicit=true;}}
+}catch(e){}
+/* Motion is on for everyone; a "motion=off" cookie (disclosure §2) turns it off. */
+try{if(/(?:^|;\s*)motion=off\b/.test(document.cookie))document.documentElement.classList.add('no-motion');}catch(e){}
+if(!t){try{t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){t='dark';}}
+document.documentElement.setAttribute('data-theme',t);
+if(location.hostname==='www.john.goliash.com'){location.replace('https://john.goliash.com'+location.pathname+location.search+location.hash);}
+document.documentElement.classList.add('js');
+if(explicit){try{
+  var v='?i=1',a=document.getElementById('fav-svg'),b=document.getElementById('fav-png');
+  a.href=a.href.replace(/[^\/]*$/,'')+'favicon-'+t+'.svg'+v;
+  b.href=b.href.replace(/[^\/]*$/,'')+'favicon'+(t==='dark'?'-dark':'')+'-32.png'+v;
+}catch(e){}}
+})();
+</script>
+<!-- Google Tag Manager, your container GTM-XXXXXXX (TECHNICAL §4.20). The container
+     itself sends Google Analytics (G-XXXXXXXXXX), so the page does not load gtag.js as well
+     (that counted every visit twice). Nothing loads if the visitor switched analytics off on
+     disclosure.html (cookie analytics=off) or their browser sends Global Privacy Control. -->
+<script>
+(function(w,d){var GA='G-XXXXXXXXXX',GTM='GTM-XXXXXXX',off=/X{4}/.test(GTM);
+try{off=/(?:^|;\s*)analytics=off\b/.test(d.cookie)||navigator.globalPrivacyControl===true;}catch(e){}
+w['ga-disable-'+GA]=off;
+if(off)return;
+w.dataLayer=w.dataLayer||[];
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName('script')[0],j=d.createElement('script');
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNode.insertBefore(j,f);
+})(window,document);
+</script>
+<link rel="stylesheet" href="/css/style.css?v=1">
+</head>
+<body>
+<!-- Google Tag Manager (noscript): only for visitors with JavaScript off -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="site" class="site in no-intro">
+  <span class="rule rule-top" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="rule rule-bottom" aria-hidden="true"><i></i><i></i><i></i></span>
+
+  <header class="hdr">
+    <a class="brand" href="/" aria-label="John Goliash, home">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect class="m-c" x="7"  y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-s" x="16.5" y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-m" x="26" y="9" width="7" height="20" rx="1.5"/>
+        <rect class="m-line" x="5" y="31.5" width="30" height="2.5" rx="1.25"/>
+      </svg>
+      <span class="wm">John Goliash</span>
+    </a>
+
+    <button id="menu" class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">
+      <span class="menu-ico" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="menu-label">Menu</span>
+    </button>
+
+    <nav id="nav" class="nav" aria-label="Main">
+      <a href="/#resume">Résumé</a>
+      <a href="/#lab">KPI lab</a>
+      <a href="/#projects">Projects</a>
+      <a href="/#build">How I built this</a>
+      <a href="/#contact" class="nav-cta">Contact</a>
+      <span class="nav-ink" aria-hidden="true"></span>
+    </nav>
+
+    <button id="theme" class="theme" type="button" aria-label="Switch theme"></button>
+  </header>
+
+  <main id="main" class="err">
+    <p class="err-code">Error 404: page not found</p>
+
+    <!-- One of these three is shown at random on each load. -->
+    <div class="err-slot">
+
+      <article class="err-card" data-variant="1" hidden>
+        <h1 class="display">Count: 0.<br>System: 1.</h1>
+        <p class="err-lede">
+          The link says this page exists. I counted, and it doesn&rsquo;t. That&rsquo;s a variance,
+          and I don&rsquo;t publish a number I can&rsquo;t explain.
+        </p>
+        <dl class="tally err-tally">
+          <div><dt>Pages the link expected</dt><dd>1</dd></div>
+          <div><dt>Pages found</dt><dd>0</dd></div>
+          <div><dt>Variance</dt><dd class="bad">&minus;1</dd></div>
+        </dl>
+      </article>
+
+      <article class="err-card" data-variant="2" hidden>
+        <h1 class="display">0 rows returned.</h1>
+        <p class="err-lede">
+          I asked the site for this page twice, two different ways. Both times it came back empty.
+        </p>
+        <div class="err-log" aria-hidden="true">
+          <span class="q">&gt; SELECT page FROM site WHERE path = '<span class="err-path" data-path>/the-page-you-wanted</span>';</span>
+          <span class="r">0 rows returned.</span>
+          <span class="q">&gt; SELECT page FROM site WHERE path LIKE '%page%';</span>
+          <span class="r">0 rows returned.</span>
+          <span class="ok">-- sending you back to the front page.</span>
+        </div>
+      </article>
+
+      <article class="err-card" data-variant="3" hidden>
+        <h1 class="display">This page didn&rsquo;t reconcile.</h1>
+        <p class="err-lede">
+          The link and the site disagree. Neither one is right until I check. A link is probably out
+          of date. Tell me where you found it and I&rsquo;ll fix it.
+        </p>
+        <p class="err-aside">Somewhere, a forklift is beeping in reverse. It knows how you feel.</p>
+      </article>
+
+    </div>
+
+    <div class="cta err-cta">
+      <a class="btn btn-solid" href="/">Back to the front page</a>
+      <a class="btn btn-ghost" href="/#contact">Tell me about the broken link</a>
+    </div>
+
+    <button id="reroll" class="err-reroll" type="button">Try another excuse</button>
+  </main>
+
+  <footer class="ftr">
+    <div class="ftr-in">
+      <div class="ftr-col ftr-about">
+        <p class="ftr-wm">John Goliash</p>
+        <p>Data analyst for manufacturing and warehouse operations in Northeast PA. I make sure the numbers are right before anyone acts on them.</p>
+      </div>
+      <nav class="ftr-col" aria-label="Footer">
+        <h2 class="ftr-h">On this site</h2>
+        <a href="/#resume">Résumé</a>
+        <a href="/#lab">KPI lab</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#build">How I built this</a>
+        <a href="/#contact">Contact</a>
+        <a class="ftr-replay" href="/#replay">Replay the intro</a>
+      </nav>
+      <div class="ftr-col">
+        <h2 class="ftr-h">The fine print</h2>
+        <a href="/disclosure.html">Full disclosure</a>
+        <a href="/files/download/Example_Resume.pdf" download>Résumé (PDF)</a>
+        <p class="ftr-promise">No ads · No selling your data · Analytics you can switch off</p>
+      </div>
+    </div>
+    <div class="ftr-base">
+      <p>&copy; 2026 John Goliash. The count sheet and the KPI lab use sample data.</p>
+    </div>
+  </footer>
+</div>
+
+<script src="/js/err.js?v=1"></script>
+<script src="/js/main.js?v=1"></script>
+</body>
+</html>

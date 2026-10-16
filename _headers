@@ -1,0 +1,30 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), browsing-topics=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com; style-src 'self' 'unsafe-inline' https://tagmanager.google.com https://fonts.googleapis.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://ssl.gstatic.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'self' https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+
+/css/*
+  Cache-Control: public, max-age=604800
+
+/js/*
+  Cache-Control: public, max-age=604800
+
+/img/*
+  Cache-Control: public, max-age=604800
+
+/files/*
+  ! Content-Security-Policy
+  Cache-Control: public, max-age=3600
+
+/files/download/*
+  Content-Disposition: attachment; filename="Example_Resume.pdf"
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# KPI Lab's offline helper: always check for a new version (TECHNICAL §4.25)
+/kpi-sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /kpi-lab
