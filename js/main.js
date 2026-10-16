@@ -730,6 +730,11 @@
     function go() {
       window.addEventListener('beforeprint', onBefore);
       window.addEventListener('afterprint', done);
+      /* Safari (iPhone, iPad, Mac) sizes print pages its own way; style.css gives it its own size */
+      var uaS = navigator.userAgent || '';
+      var iOS = /iPhone|iPad|iPod/.test(uaS) || (/Macintosh/.test(uaS) && navigator.maxTouchPoints > 1);
+      root.classList.toggle('print-ios', iOS);    // every browser on iPhone/iPad prints with Apple's engine
+      root.classList.toggle('print-safari', !iOS && /Safari/.test(uaS) && !/Chrome|Chromium|Edg\/|OPR|Android/.test(uaS));   // Safari on a Mac
       noMargins = document.createElement('style');
       noMargins.textContent = '@page { size: letter; margin: 0; }';
       document.head.appendChild(noMargins);
