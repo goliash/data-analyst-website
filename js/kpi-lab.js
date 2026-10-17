@@ -727,8 +727,59 @@
 
     /* ---------- Google Tag Manager & Google Analytics (TECHNICAL §4.20, §4.23) ----------
        Pushes custom events to window.dataLayer for GTM / GA4.
-       Sends the measure name, group and platform (website / pwa / desktop).
+       Sends measure name, OS version, runtime, time of use, viewport, and platform.
        NEVER sends typed numbers or private values. Respects analytics=off and GPC. */
+    var sessionStart = Date.now();
+    var sessionActiveSeconds = 0;
+    var lastActiveTick = Date.now();
+    var viewedMeasuresMap = {};
+    var calculationCount = 0;
+    var actionCount = 0;
+
+    function getSystemMetrics() {
+      var m = {};
+      try {
+        var ua = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+        var os = 'Unknown OS';
+        var osVer = 'standard';
+        if (/Windows NT 10.0/i.test(ua)) { os = 'Windows'; osVer = '10/11'; }
+        else if (/Windows NT 6.3/i.test(ua)) { os = 'Windows'; osVer = '8.1'; }
+        else if (/Windows NT 6.1/i.test(ua)) { os = 'Windows'; osVer = '7'; }
+        else if (/Mac OS X ([0-9_]+)/i.test(ua)) { os = 'macOS'; osVer = RegExp.$1.replace(/_/g, '.'); }
+        else if (/iPhone|iPad|iPod/i.test(ua)) { os = 'iOS'; }
+        else if (/Android ([0-9.]+)/i.test(ua)) { os = 'Android'; osVer = RegExp.$1; }
+        else if (/Linux/i.test(ua)) { os = 'Linux'; }
+        m.os_name = os;
+        m.os_version = osVer;
+
+        var d = new Date();
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        m.local_hour = d.getHours();
+        m.local_day = days[d.getDay()];
+        m.time_of_use = days[d.getDay()] + ' ' + d.getHours() + ':00';
+        try { m.user_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+
+        var sw = typeof window !== 'undefined' && window.screen ? window.screen.width : 0;
+        var sh = typeof window !== 'undefined' && window.screen ? window.screen.height : 0;
+        var vw = typeof window !== 'undefined' ? window.innerWidth : 0;
+        var vh = typeof window !== 'undefined' ? window.innerHeight : 0;
+        m.screen_resolution = sw + 'x' + sh;
+        m.viewport_size = vw + 'x' + vh;
+        m.device_category = vw >= 1200 ? 'desktop_wide' : (vw >= 900 ? 'desktop' : (vw >= 600 ? 'tablet' : 'mobile'));
+
+        m.theme_mode = root.getAttribute('data-theme') || (typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        m.reduced_motion = root.classList.contains('no-motion');
+        m.is_online = typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean' ? navigator.onLine : true;
+        if (typeof navigator !== 'undefined' && navigator.connection && navigator.connection.effectiveType) {
+          m.connection_type = navigator.connection.effectiveType;
+        }
+        m.runtime_seconds = Math.round((Date.now() - sessionStart) / 1000);
+        m.active_duration_seconds = sessionActiveSeconds;
+        m.session_measures_count = Object.keys(viewedMeasuresMap).length;
+      } catch (e) {}
+      return m;
+    }
+
     function trackKpi(eventName, extra) {
       try {
         if (typeof window === 'undefined') return;
@@ -742,6 +793,7 @@
         var mid = (extra && extra.measure_id) || current;
         var mname = (extra && extra.measure_name) || (KPIS[mid] && KPIS[mid].name) || mid;
         var mgrp = (extra && extra.measure_group) || groupOf(mid);
+        var sys = getSystemMetrics();
         var data = {
           event: eventName,
           measure_id: mid,
@@ -750,8 +802,24 @@
           app_platform: PWA ? 'pwa' : (ELECTRON ? 'desktop' : 'website'),
           content_type: 'kpi_measure',
           item_id: mid,
-          item_name: mname
+          item_name: mname,
+          os_name: sys.os_name,
+          os_version: sys.os_version,
+          local_hour: sys.local_hour,
+          local_day: sys.local_day,
+          time_of_use: sys.time_of_use,
+          screen_resolution: sys.screen_resolution,
+          viewport_size: sys.viewport_size,
+          device_category: sys.device_category,
+          theme_mode: sys.theme_mode,
+          reduced_motion: sys.reduced_motion,
+          is_online: sys.is_online,
+          runtime_seconds: sys.runtime_seconds,
+          active_duration_seconds: sys.active_duration_seconds,
+          session_measures_count: sys.session_measures_count
         };
+        if (sys.user_timezone) data.user_timezone = sys.user_timezone;
+        if (sys.connection_type) data.connection_type = sys.connection_type;
         if (extra) {
           for (var p in extra) {
             if (Object.prototype.hasOwnProperty.call(extra, p)) {
@@ -768,6 +836,7 @@
 
     function setMeasure(k, quiet) {
       if (!KPIS[k]) return;
+      viewedMeasuresMap[k] = true;
       var prev = current;
       current = k;
       renderFields(); compute();
@@ -1126,6 +1195,7 @@
         var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
         setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
         status('Downloaded ' + name + '.');
+        trackKpi('kpi_download', { download_type: all ? 'csv_all_14' : 'csv_single', filename: name, measure_id: current });
       } catch (e) { status('This browser wouldn’t download the file.'); }
     }
     function copyResult() {
@@ -1282,6 +1352,7 @@
     }
 
     function run(cmd) {
+      actionCount++;
       trackKpi('kpi_action', { action_name: cmd });
       switch (cmd) {
         case 'save': save(); break;
@@ -1485,6 +1556,7 @@
     var calcTrackTimer = null;
     labForm.addEventListener('input', function () {
       compute();
+      calculationCount++;
       clearTimeout(calcTrackTimer);
       calcTrackTimer = setTimeout(function () {
         trackKpi('kpi_measure_calculate', {
@@ -1509,4 +1581,62 @@
       }, { threshold: 0.25 });
       viewObs.observe(kapp);
     }
+
+    /* Track clicks on executable and source downloads */
+    kapp.addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a || !a.href) return;
+      var h = a.getAttribute('href') || '';
+      var dt = null, fn = '';
+      if (/KPI-Lab-Setup\.exe/i.test(h)) { dt = 'win_installer'; fn = 'KPI-Lab-Setup.exe'; }
+      else if (/KPI-Lab-Portable\.exe/i.test(h)) { dt = 'win_portable'; fn = 'KPI-Lab-Portable.exe'; }
+      else if (/KPI-Lab-mac-arm64\.dmg/i.test(h)) { dt = 'mac_arm64'; fn = 'KPI-Lab-mac-arm64.dmg'; }
+      else if (/KPI-Lab-mac-x64\.dmg/i.test(h)) { dt = 'mac_intel'; fn = 'KPI-Lab-mac-x64.dmg'; }
+      else if (/KPI-Lab-linux.*\.AppImage/i.test(h)) { dt = 'linux_appimage'; fn = 'KPI-Lab-linux.AppImage'; }
+      else if (/KPI-Lab-linux.*\.deb/i.test(h)) { dt = 'linux_deb'; fn = 'KPI-Lab-linux.deb'; }
+      else if (/kpi-lab-desktop\.zip/i.test(h)) { dt = 'source_zip'; fn = 'kpi-lab-desktop.zip'; }
+      if (dt) {
+        trackKpi('kpi_download', { download_type: dt, filename: fn });
+      }
+    });
+
+    /* Active runtime and engagement tracking */
+    setInterval(function () {
+      var now = Date.now();
+      if (!document.hidden) {
+        sessionActiveSeconds += Math.round((now - lastActiveTick) / 1000);
+      }
+      lastActiveTick = now;
+    }, 5000);
+
+    var reportedMinutes = {};
+    setInterval(function () {
+      if (document.hidden) return;
+      var mins = Math.floor(sessionActiveSeconds / 60);
+      if (mins >= 1 && !reportedMinutes[mins]) {
+        reportedMinutes[mins] = true;
+        trackKpi('kpi_session_heartbeat', {
+          active_duration_minutes: mins,
+          active_duration_seconds: sessionActiveSeconds,
+          session_calculations_count: calculationCount,
+          session_actions_count: actionCount
+        });
+      }
+    }, 15000);
+
+    function reportSessionDuration() {
+      var totalSec = Math.round((Date.now() - sessionStart) / 1000);
+      if (totalSec < 3) return;
+      trackKpi('kpi_session_duration', {
+        total_session_seconds: totalSec,
+        active_duration_seconds: sessionActiveSeconds,
+        distinct_measures_count: Object.keys(viewedMeasuresMap).length,
+        session_calculations_count: calculationCount,
+        session_actions_count: actionCount
+      });
+    }
+    window.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') reportSessionDuration();
+    });
+    window.addEventListener('pagehide', reportSessionDuration);
 })();
