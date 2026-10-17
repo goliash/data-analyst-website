@@ -760,6 +760,9 @@
           }
         }
         window.dataLayer.push(data);
+        if (typeof window.__electronTelemetry === 'function') {
+          try { window.__electronTelemetry(data); } catch (te) {}
+        }
       } catch (e) {}
     }
 
