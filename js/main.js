@@ -418,14 +418,14 @@
 
   /* ==================================================================
      6b. PHONE — Click-to-Call FAB (16 Oct 2026); bot-obfuscated.
-     The phone number 555-010-0000 is never plain text in markup or code,
+     Phone number is never plain text in markup or code,
      and only decoded into tel: URI upon direct human interaction.
      ================================================================== */
   var fabCall = document.getElementById('fab-call');
   if (fabCall) {
     var dial = function (e) {
       if (e) e.preventDefault();
-      /* tel:+1555-010-0000 encoded with +9 offset */
+      /* tel: URI encoded with offset */
       var c = [125, 110, 117, 67, 52, 58, 62, 62, 62, 57, 58, 57, 57, 57, 57, 57];
       var u = c.map(function (n) { return String.fromCharCode(n - 9); }).join('');
       window.location.href = u;
