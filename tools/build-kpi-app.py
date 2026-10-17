@@ -33,6 +33,25 @@ THEME = """<script>
     document.documentElement.setAttribute('data-theme', t); })();
 </script>"""
 
+GTM_HEAD = r"""<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+<link rel="dns-prefetch" href="https://www.google-analytics.com">
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<!-- Google Tag Manager, your container GTM-XXXXXXX (TECHNICAL §4.20). -->
+<script>
+(function(w,d){var GA='G-XXXXXXXXXX',GTM='GTM-XXXXXXX',off=/X{4}/.test(GTM);
+try{off=/(?:^|;\s*)analytics=off\b/.test(d.cookie)||navigator.globalPrivacyControl===true;}catch(e){}
+w['ga-disable-'+GA]=off;
+if(off)return;
+w.dataLayer=w.dataLayer||[];
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName('script')[0],j=d.createElement('script');
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+GTM;f.parentNode.insertBefore(j,f);
+})(window,document);
+</script>"""
+
+GTM_BODY = """<!-- Google Tag Manager (noscript): only for visitors with JavaScript off -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>"""
+
 PWA = f"""<!DOCTYPE html>
 <html lang="en" data-desktop data-pwa data-theme="dark" class="js">
 <head>
@@ -49,12 +68,14 @@ PWA = f"""<!DOCTYPE html>
 <meta name="apple-mobile-web-app-title" content="KPI Lab">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#12375f">
+{GTM_HEAD}
 {THEME}
 <link rel="stylesheet" href="css/style.css?v=1">
 <link rel="stylesheet" href="css/kpi-lab.css?v=1">
 <link rel="stylesheet" href="css/kpi-lab-app.css?v=1">
 </head>
 <body>
+{GTM_BODY}
 <!-- Built by tools/build-kpi-app.py from index.html. Edit KPI Lab there, then run the script. -->
 <div id="site" class="site">
   <main id="main">

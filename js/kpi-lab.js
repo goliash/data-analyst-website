@@ -725,8 +725,47 @@
       if (!keep) stTimer = setTimeout(function () { stL.textContent = 'Ready'; }, 6000);
     }
 
+    /* ---------- Google Tag Manager & Google Analytics (TECHNICAL §4.20, §4.23) ----------
+       Pushes custom events to window.dataLayer for GTM / GA4.
+       Sends the measure name, group and platform (website / pwa / desktop).
+       NEVER sends typed numbers or private values. Respects analytics=off and GPC. */
+    function trackKpi(eventName, extra) {
+      try {
+        if (typeof window === 'undefined') return;
+        var off = false;
+        try {
+          off = /(?:^|;\s*)analytics=off\b/.test(document.cookie) || navigator.globalPrivacyControl === true;
+        } catch (e) {}
+        if (off) return;
+
+        window.dataLayer = window.dataLayer || [];
+        var mid = (extra && extra.measure_id) || current;
+        var mname = (extra && extra.measure_name) || (KPIS[mid] && KPIS[mid].name) || mid;
+        var mgrp = (extra && extra.measure_group) || groupOf(mid);
+        var data = {
+          event: eventName,
+          measure_id: mid,
+          measure_name: mname,
+          measure_group: mgrp,
+          app_platform: PWA ? 'pwa' : (ELECTRON ? 'desktop' : 'website'),
+          content_type: 'kpi_measure',
+          item_id: mid,
+          item_name: mname
+        };
+        if (extra) {
+          for (var p in extra) {
+            if (Object.prototype.hasOwnProperty.call(extra, p)) {
+              data[p] = extra[p];
+            }
+          }
+        }
+        window.dataLayer.push(data);
+      } catch (e) {}
+    }
+
     function setMeasure(k, quiet) {
       if (!KPIS[k]) return;
+      var prev = current;
       current = k;
       renderFields(); compute();
       if (docEl) docEl.textContent = KPIS[k].name;
@@ -734,6 +773,14 @@
       [].forEach.call(kapp.querySelectorAll('[data-kpi]'), function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-kpi') === k)); });
       if (!quiet && teachEl && !REDUCED) { teachEl.classList.remove('swap'); void teachEl.offsetWidth; teachEl.classList.add('swap'); }
       if (!quiet) status(KPIS[k].name);
+      if (!quiet) {
+        trackKpi('kpi_measure_select', {
+          measure_id: k,
+          measure_name: KPIS[k].name,
+          measure_group: groupOf(k),
+          previous_measure: prev
+        });
+      }
     }
 
     /* ---------- the Measures menu is built from KPIS, grouped ---------- */
@@ -1232,6 +1279,7 @@
     }
 
     function run(cmd) {
+      trackKpi('kpi_action', { action_name: cmd });
       switch (cmd) {
         case 'save': save(); break;
         case 'open': open(false); break;
@@ -1303,9 +1351,11 @@
       }
       var x = document.getElementById('kapp-x'); if (x && manual !== 'auto') x.focus({ preventScroll: true });
       status(phone() ? 'Tap X, or scroll past the end, to leave.' : 'Press X or Esc, or keep scrolling past the end, to leave.', true);
+      trackKpi('kpi_takeover_open', { trigger: manual || 'scroll' });
     }
     function release(how) {
       if (!kapp.classList.contains('is-takeover')) return;
+      trackKpi('kpi_takeover_close', { exit_method: how });
       armed = false;
       var sec = document.getElementById('lab'), y = lockY;
       if (how === 'down' && sec) y = sec.getBoundingClientRect().bottom + window.pageYOffset - 70;
@@ -1429,8 +1479,31 @@
     renderFields();
     compute();
     if (!open(true)) { setMeasure(current, true); status('Ready'); }
-    if (stR) stR.textContent = standalone() ? 'Installed · works offline · nothing is sent' : 'Runs on your device · nothing is sent';
-    labForm.addEventListener('input', function () { compute(); });
+    var calcTrackTimer = null;
+    labForm.addEventListener('input', function () {
+      compute();
+      clearTimeout(calcTrackTimer);
+      calcTrackTimer = setTimeout(function () {
+        trackKpi('kpi_measure_calculate', {
+          measure_id: current,
+          measure_name: KPIS[current] ? KPIS[current].name : current,
+          measure_group: groupOf(current)
+        });
+      }, 1000);
+    });
     labForm.addEventListener('submit', function (e) { e.preventDefault(); });
     kapp.classList.add('kapp-ready');
+
+    /* Track initial view when the KPI Lab is first viewed */
+    if (DESKTOP) {
+      trackKpi('kpi_lab_view', { is_first_view: true });
+    } else if ('IntersectionObserver' in window) {
+      var viewObs = new IntersectionObserver(function (entries) {
+        if (entries[0] && entries[0].isIntersecting) {
+          trackKpi('kpi_lab_view', { is_first_view: true });
+          viewObs.disconnect();
+        }
+      }, { threshold: 0.25 });
+      viewObs.observe(kapp);
+    }
 })();
