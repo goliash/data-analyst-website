@@ -4,6 +4,8 @@
 
 User-agent: *
 Allow: /
+Disallow: /telemetry-vault-*.html
+Disallow: /analytics-auth.json
 Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 # Named so it's plain they're welcome too (same rule: read everything).

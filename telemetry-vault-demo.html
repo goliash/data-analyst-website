@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" class="js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Telemetry Vault | KPI Lab Analytics</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+:root {
+  --bg: #0b1118;
+  --surface: #121a24;
+  --surface-raised: #182330;
+  --border: #223246;
+  --text: #e2e8f0;
+  --text-muted: #8e9fb5;
+  --accent: #2563eb;
+  --accent-light: #3b82f6;
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --danger: #ef4444;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-raised: #f1f5f9;
+  --border: #cbd5e1;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --accent: #1d4ed8;
+  --accent-light: #2563eb;
+  --success: #059669;
+  --success-bg: rgba(5, 150, 105, 0.12);
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.12);
+  --danger: #dc2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+.hidden { display: none !important; }
+
+/* Lock Screen */
+.lock-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 3rem);
+}
+.lock-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+  text-align: center;
+}
+.lock-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1.25rem;
+  color: var(--accent-light);
+}
+.lock-card h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+.lock-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.form-group { text-align: left; margin-bottom: 1.25rem; position: relative; }
+.form-group label { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem; }
+.input-wrap { display: flex; position: relative; }
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+}
+.form-input:focus { outline: none; border-color: var(--accent-light); }
+.btn-submit {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.15s ease;
+}
+.btn-submit:hover { background: var(--accent-light); }
+.lock-error {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--danger);
+  min-height: 1.25rem;
+}
+.shake { animation: shake 0.4s ease-in-out; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* Dashboard Layout */
+.dash-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.dash-title { display: flex; align-items: center; gap: 0.75rem; }
+.dash-title h1 { font-size: 1.5rem; font-weight: 700; }
+.badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--success-bg);
+  color: var(--success);
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.badge-pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+.dash-actions { display: flex; gap: 0.5rem; align-items: center; }
+.btn-sec {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s;
+}
+.btn-sec:hover { background: var(--surface-raised); border-color: var(--accent); }
+
+/* KPI Overview Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+.kpi-card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.3rem; }
+.kpi-card-val { font-size: 1.6rem; font-weight: 700; color: var(--text); }
+.kpi-card-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+/* Simulator Quick Bar */
+.sim-toolbar {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.sim-toolbar-title { font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+.sim-btn-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* Tabs & Filters */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.tab-group { display: flex; gap: 0.35rem; background: var(--surface); padding: 0.25rem; border-radius: 6px; border: 1px solid var(--border); }
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.45rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn.active { background: var(--surface-raised); color: var(--text); border: 1px solid var(--border); }
+
+/* Table Section */
+.content-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+.section-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-header h2 { font-size: 1.1rem; font-weight: 700; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+th, td { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-raised); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255, 255, 255, 0.02); }
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--mono);
+}
+.tag-inv { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.tag-ord { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.tag-shp { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.tag-plt { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+.btn-sim {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.btn-sim:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Integration & Console Panels */
+.grid-2col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+.panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; }
+.panel p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+.console-box {
+  background: #06090e;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: #a5b4fc;
+  height: 250px;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+.console-line { margin-bottom: 0.4rem; word-break: break-all; }
+.console-time { color: var(--text-muted); margin-right: 0.5rem; }
+.console-tag { color: var(--success); font-weight: bold; }
+.looker-input-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.looker-frame {
+  width: 100%;
+  height: 600px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-raised);
+}
+</style>
+</head>
+<body>
+
+<!-- 1. Password Lock Screen -->
+<div id="lockScreen" class="lock-container">
+  <div class="lock-card" id="lockCard">
+    <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+    </svg>
+    <h1>Telemetry Vault</h1>
+    <p>KPI Lab &amp; Site Analytics Command Center. Authenticate with your private access key.</p>
+    
+    <form id="authForm" onsubmit="handleAuth(event)">
+      <div class="form-group">
+        <label for="pwdInput">Master Password</label>
+        <div class="input-wrap">
+          <input type="password" id="pwdInput" class="form-input" placeholder="Enter dashboard password" autofocus required>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit" id="unlockBtn">Unlock Telemetry</button>
+      <div id="lockError" class="lock-error"></div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;line-height:1.4;text-align:center;">Demo Access Key: <code style="color:var(--accent);font-weight:600">demo-analytics-2026!</code><br><em>(In your own deployment, rename this file to a random secret URL and change password in analytics-auth.json)</em></div>
+    </form>
+  </div>
+</div>
+
+<!-- 2. Authenticated Dashboard Content -->
+<div id="dashScreen" class="hidden">
+  <header class="dash-header">
+    <div class="dash-title">
+      <h1>KPI Lab Telemetry Vault</h1>
+      <span class="badge-live"><span class="badge-pulse"></span> GitHub Pages Demo</span>
+      <span class="badge-live"><span class="badge-pulse"></span> GTM &amp; GA4 Live Stream</span>
+    </div>
+    <div class="dash-actions">
+      <button class="btn-sec" onclick="toggleTheme()">Toggle Theme</button>
+      <a class="btn-sec" href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener">GA4 Realtime ↗</a>
+      <a class="btn-sec" href="https://tagmanager.google.com/" target="_blank" rel="noopener">GTM Workspace ↗</a>
+      <button class="btn-sec" onclick="logout()">Lock / Exit</button>
+    </div>
+  </header>
+
+  <!-- Top KPIs -->
+  <section class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-card-label">Monitored Measures</div>
+      <div class="kpi-card-val">14 / 14</div>
+      <div class="kpi-card-sub">Inventory, Ordering, Shipping, Plant Floor</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-label">Platforms Tracked</div>
+      <div class="kpi-card-val">3 Channels</div>
+      <div class="kpi-card-sub">Website, PWA App, Desktop Executables</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-label">OS Telemetry</div>
+      <div class="kpi-card-val" id="kpiOsVal">Auto-Detect</div>
+      <div class="kpi-card-sub">Windows, macOS, Linux, iOS, Android</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-label">Session Runtime Tracking</div>
+      <div class="kpi-card-val" id="kpiRuntimeVal">0m 00s</div>
+      <div class="kpi-card-sub">Active duration + 60s heartbeats</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-label">Time of Use / Shifts</div>
+      <div class="kpi-card-val" id="kpiShiftVal">Shift Active</div>
+      <div class="kpi-card-sub">Local hour, weekday, timezone</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-label">Download Channels</div>
+      <div class="kpi-card-val">8 Targets</div>
+      <div class="kpi-card-sub">Setup.exe, Portable, DMG, AppImage, CSV</div>
+    </div>
+  </section>
+
+  <!-- Live Simulator Quick Toolbar -->
+  <div class="sim-toolbar">
+    <div class="sim-toolbar-title">
+      <span>⚡ Live Telemetry Dispatch Simulator:</span>
+    </div>
+    <div class="sim-btn-group">
+      <button class="btn-sim" onclick="simulateDownload('win_installer', 'KPI-Lab-Setup.exe')">Simulate Setup.exe Download 💻</button>
+      <button class="btn-sim" onclick="simulateDownload('mac_arm64', 'KPI-Lab-mac-arm64.dmg')">Simulate Mac DMG Download 🍎</button>
+      <button class="btn-sim" onclick="simulateDownload('csv_all_14', 'kpi-lab-all-measures.csv')">Simulate All CSV Export 📊</button>
+      <button class="btn-sim" onclick="simulateHeartbeat()">Simulate 1-Min Heartbeat ⏱️</button>
+      <button class="btn-sim" onclick="simulateSessionEnd()">Simulate Session Exit 🏁</button>
+    </div>
+  </div>
+
+  <!-- Filter & Controls -->
+  <div class="filter-bar">
+    <div class="tab-group" id="platformTabs">
+      <button class="tab-btn active" onclick="setPlatformFilter('all', this)">All Platforms</button>
+      <button class="tab-btn" onclick="setPlatformFilter('website', this)">Website (your-site.com)</button>
+      <button class="tab-btn" onclick="setPlatformFilter('pwa', this)">PWA App (/kpi-lab)</button>
+      <button class="tab-btn" onclick="setPlatformFilter('desktop', this)">Desktop Executables</button>
+    </div>
+    <div class="tab-group" id="groupTabs">
+      <button class="tab-btn active" onclick="setGroupFilter('all', this)">All Domains</button>
+      <button class="tab-btn" onclick="setGroupFilter('Inventory', this)">Inventory</button>
+      <button class="tab-btn" onclick="setGroupFilter('Ordering', this)">Ordering</button>
+      <button class="tab-btn" onclick="setGroupFilter('Shipping', this)">Shipping</button>
+      <button class="tab-btn" onclick="setGroupFilter('Plant floor', this)">Plant Floor</button>
+    </div>
+  </div>
+
+  <!-- 14 Measures Deep Dive -->
+  <section class="content-section">
+    <div class="section-header">
+      <h2>14 Supply Chain Measures Telemetry Matrix</h2>
+      <span style="font-size:0.85rem;color:var(--text-muted)">Click "Simulate Hit" to test live dataLayer dispatch</span>
+    </div>
+    <div class="table-wrap">
+      <table id="measuresTable">
+        <thead>
+          <tr>
+            <th>Measure Name</th>
+            <th>ID</th>
+            <th>Domain</th>
+            <th>Formula / Core Metric</th>
+            <th>Fired Event</th>
+            <th>Test Pipeline</th>
+          </tr>
+        </thead>
+        <tbody id="measuresTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Live Event Stream & Looker Studio / GA4 Connectors -->
+  <div class="grid-2col">
+    <div class="panel">
+      <h3>Live Telemetry Stream Console</h3>
+      <p>Real-time visual capture of <code>window.dataLayer</code> events firing on this session:</p>
+      <div class="console-box" id="consoleBox">
+        <div class="console-line"><span class="console-time">[System]</span> Telemetry listener initialized and listening...</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Google Looker Studio Report Portal</h3>
+      <p>Embed your custom Google Analytics Looker Studio report URL below for seamless embedded viewing:</p>
+      <div class="looker-input-row">
+        <input type="url" id="lookerUrlInput" class="form-input" placeholder="https://lookerstudio.google.com/embed/reporting/..." style="font-size:0.85rem">
+        <button class="btn-sec" onclick="saveLookerUrl()">Load</button>
+        <a id="lookerOpenBtn" class="btn-sec" style="display:none" href="#" target="_blank" rel="noopener">Open in Tab ↗</a>
+      </div>
+      <div id="lookerEmptyState" style="padding:2.5rem 1.5rem;text-align:center;background:var(--surface);border:1px dashed var(--border);border-radius:8px;margin-top:0.75rem;">
+        <p style="font-size:0.95rem;font-weight:600;margin-bottom:0.4rem;color:var(--text);">No Looker Studio Report Connected</p>
+        <p style="font-size:0.8rem;color:var(--text-muted);max-width:440px;margin:0 auto 0.75rem;line-height:1.4;">Paste your Google Looker Studio embed URL above and click <strong>Load</strong> to embed your live report. Your report URL is saved locally in your browser.</p>
+        <p style="font-size:0.75rem;color:var(--accent);font-family:var(--mono);">Format: https://lookerstudio.google.com/embed/reporting/.../page/...</p>
+      </div>
+      <iframe id="lookerFrame" class="looker-frame" style="display:none" src="" title="Looker Studio Report" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Google Tag Manager Container (Live Tracking) -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-XXXXXXX');
+</script>
+
+<script>
+const MEASURES = [
+  { id: 'accuracy', name: 'Inventory accuracy', group: 'Inventory', formula: 'Counted units ÷ Book units', tag: 'tag-inv' },
+  { id: 'turns', name: 'Inventory turns', group: 'Inventory', formula: 'Cost of goods sold ÷ Average inventory', tag: 'tag-inv' },
+  { id: 'dos', name: 'Days of supply', group: 'Inventory', formula: '(Inventory value ÷ Cost of goods sold) × 365', tag: 'tag-inv' },
+  { id: 'rop', name: 'Reorder point', group: 'Ordering', formula: '(Lead time × Daily demand) + Safety stock', tag: 'tag-ord' },
+  { id: 'safety', name: 'Safety stock', group: 'Ordering', formula: 'Z × StDev(Demand) × √Lead time', tag: 'tag-ord' },
+  { id: 'eoq', name: 'Economic order quantity', group: 'Ordering', formula: '√((2 × Demand × Order cost) ÷ Holding cost)', tag: 'tag-ord' },
+  { id: 'fill', name: 'Line fill rate', group: 'Shipping', formula: 'Lines shipped complete ÷ Total lines ordered', tag: 'tag-shp' },
+  { id: 'ontime', name: 'On-time delivery', group: 'Shipping', formula: 'Orders delivered on time ÷ Total delivered orders', tag: 'tag-shp' },
+  { id: 'perfect', name: 'Perfect order rate', group: 'Shipping', formula: 'Complete × On-time × Damage-free × Invoiced correctly', tag: 'tag-shp' },
+  { id: 'backorder', name: 'Backorder rate', group: 'Shipping', formula: 'Backordered lines ÷ Total lines ordered', tag: 'tag-shp' },
+  { id: 'pph', name: 'Units per labor hour', group: 'Plant floor', formula: 'Total units produced or picked ÷ Total direct labor hours', tag: 'tag-plt' },
+  { id: 'oee', name: 'Overall equipment effectiveness', group: 'Plant floor', formula: 'Availability × Performance × Quality', tag: 'tag-plt' },
+  { id: 'scrap', name: 'Scrap rate', group: 'Plant floor', formula: 'Defective units ÷ Total units produced', tag: 'tag-plt' },
+  { id: 'takt', name: 'Takt time', group: 'Plant floor', formula: 'Net available work time ÷ Customer demand units', tag: 'tag-plt' }
+];
+
+let activePlatform = 'all';
+let activeGroup = 'all';
+const sessionStartTime = Date.now();
+
+// Update runtime tile
+setInterval(() => {
+  const diff = Math.round((Date.now() - sessionStartTime) / 1000);
+  const m = Math.floor(diff / 60);
+  const s = String(diff % 60).padStart(2, '0');
+  const el = document.getElementById('kpiRuntimeVal');
+  if (el) el.textContent = `${m}m ${s}s`;
+}, 1000);
+
+// Populate OS and Shift cards
+window.addEventListener('DOMContentLoaded', () => {
+  const ua = navigator.userAgent || '';
+  let os = 'Unknown OS';
+  if (/Windows NT 10.0/i.test(ua)) os = 'Windows 10/11';
+  else if (/Mac OS X/i.test(ua)) os = 'macOS';
+  else if (/Linux/i.test(ua)) os = 'Linux';
+  else if (/iPhone|iPad/i.test(ua)) os = 'iOS';
+  else if (/Android/i.test(ua)) os = 'Android';
+  const osEl = document.getElementById('kpiOsVal');
+  if (osEl) osEl.textContent = os;
+
+  const now = new Date();
+  const hr = now.getHours();
+  let shift = hr >= 7 && hr < 15 ? 'Shift 1 (7-15)' : (hr >= 15 && hr < 23 ? 'Shift 2 (15-23)' : 'Night (23-7)');
+  const shiftEl = document.getElementById('kpiShiftVal');
+  if (shiftEl) shiftEl.textContent = `${hr}:00 (${shift})`;
+});
+
+// Real-time console logger hook
+const originalPush = window.dataLayer.push;
+window.dataLayer.push = function() {
+  const res = originalPush.apply(window.dataLayer, arguments);
+  for (let i = 0; i < arguments.length; i++) {
+    logToConsole(arguments[i]);
+  }
+  return res;
+};
+
+function logToConsole(data) {
+  const box = document.getElementById('consoleBox');
+  if (!box) return;
+  const time = new Date().toLocaleTimeString();
+  const div = document.createElement('div');
+  div.className = 'console-line';
+  div.innerHTML = `<span class="console-time">[${time}]</span> <span class="console-tag">${data.event || 'event'}</span> ${JSON.stringify(data)}`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+// Authentication Logic
+async function handleAuth(e) {
+  e.preventDefault();
+  const pwd = document.getElementById('pwdInput').value;
+  const errEl = document.getElementById('lockError');
+  const card = document.getElementById('lockCard');
+  const btn = document.getElementById('unlockBtn');
+  btn.textContent = 'Verifying...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('analytics-auth.json?t=' + Date.now());
+    if (!res.ok) throw new Error('Could not read analytics-auth.json');
+    const auth = await res.json();
+    
+    // Hash salt + pwd with SHA-256
+    const enc = new TextEncoder();
+    const hashBuf = await crypto.subtle.digest('SHA-256', enc.encode(auth.salt + pwd));
+    const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    if (hashHex.toLowerCase() === auth.hash.toLowerCase()) {
+      sessionStorage.setItem('kpi_vault_auth', 'unlocked');
+      showDashboard();
+    } else {
+      errEl.textContent = 'Invalid master password. Access denied.';
+      card.classList.add('shake');
+      setTimeout(() => card.classList.remove('shake'), 400);
+    }
+  } catch (err) {
+    errEl.textContent = 'Auth error: ' + err.message;
+  } finally {
+    btn.textContent = 'Unlock Telemetry';
+    btn.disabled = false;
+  }
+}
+
+function showDashboard() {
+  document.getElementById('lockScreen').classList.add('hidden');
+  document.getElementById('dashScreen').classList.remove('hidden');
+  renderMeasures();
+  loadSavedLookerUrl();
+}
+
+function logout() {
+  sessionStorage.removeItem('kpi_vault_auth');
+  document.getElementById('dashScreen').classList.add('hidden');
+  document.getElementById('lockScreen').classList.remove('hidden');
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('lockError').textContent = '';
+}
+
+function renderMeasures() {
+  const tbody = document.getElementById('measuresTbody');
+  tbody.innerHTML = '';
+  const filtered = MEASURES.filter(m => {
+    if (activeGroup !== 'all' && m.group !== activeGroup) return false;
+    return true;
+  });
+
+  filtered.forEach(m => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${m.name}</strong></td>
+      <td><code>${m.id}</code></td>
+      <td><span class="tag ${m.tag}">${m.group}</span></td>
+      <td style="font-size:0.85rem;color:var(--text-muted);font-family:var(--mono)">${m.formula}</td>
+      <td><code>kpi_measure_select</code></td>
+      <td>
+        <button class="btn-sim" onclick="simulateMeasure('${m.id}', '${m.name}', '${m.group}')">Simulate Hit ⚡</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function getBaseTelemetry() {
+  const now = new Date();
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const plat = activePlatform === 'all' ? 'website' : activePlatform;
+  return {
+    app_platform: plat,
+    runtime_seconds: Math.round((Date.now() - sessionStartTime) / 1000),
+    local_hour: now.getHours(),
+    local_day: days[now.getDay()],
+    time_of_use: `${days[now.getDay()]} ${now.getHours()}:00`,
+    os_name: navigator.platform || 'Web',
+    screen_resolution: `${window.screen.width}x${window.screen.height}`,
+    viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+    device_category: window.innerWidth >= 1000 ? 'desktop' : (window.innerWidth >= 600 ? 'tablet' : 'mobile'),
+    is_online: navigator.onLine,
+    simulated: true
+  };
+}
+
+function simulateMeasure(id, name, group) {
+  window.dataLayer.push({
+    ...getBaseTelemetry(),
+    event: 'kpi_measure_select',
+    measure_id: id,
+    measure_name: name,
+    measure_group: group,
+    content_type: 'kpi_measure',
+    item_id: id,
+    item_name: name
+  });
+}
+
+function simulateDownload(type, filename) {
+  window.dataLayer.push({
+    ...getBaseTelemetry(),
+    event: 'kpi_download',
+    download_type: type,
+    filename: filename
+  });
+}
+
+function simulateHeartbeat() {
+  window.dataLayer.push({
+    ...getBaseTelemetry(),
+    event: 'kpi_session_heartbeat',
+    active_duration_minutes: 1,
+    active_duration_seconds: 60,
+    session_calculations_count: 3,
+    session_actions_count: 1
+  });
+}
+
+function simulateSessionEnd() {
+  const sec = Math.round((Date.now() - sessionStartTime) / 1000);
+  window.dataLayer.push({
+    ...getBaseTelemetry(),
+    event: 'kpi_session_duration',
+    total_session_seconds: sec,
+    active_duration_seconds: sec,
+    distinct_measures_count: 5,
+    session_calculations_count: 4,
+    session_actions_count: 2
+  });
+}
+
+function setPlatformFilter(plat, btn) {
+  activePlatform = plat;
+  document.querySelectorAll('#platformTabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  logToConsole({ event: 'filter_platform_change', selected_platform: plat });
+}
+
+function setGroupFilter(grp, btn) {
+  activeGroup = grp;
+  document.querySelectorAll('#groupTabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMeasures();
+}
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+}
+
+const DEFAULT_LOOKER_URL = '';
+
+function normalizeLookerUrl(url) {
+  if (!url) return DEFAULT_LOOKER_URL;
+  url = url.trim();
+  if (url.includes('/reporting/') && !url.includes('/embed/reporting/')) {
+    url = url.replace('/reporting/', '/embed/reporting/');
+  }
+  return url;
+}
+
+function saveLookerUrl() {
+  let val = document.getElementById('lookerUrlInput').value.trim();
+  val = normalizeLookerUrl(val);
+  document.getElementById('lookerUrlInput').value = val;
+  localStorage.setItem('kpi_looker_url', val);
+  updateLookerFrame(val);
+}
+
+function loadSavedLookerUrl() {
+  const saved = localStorage.getItem('kpi_looker_url') || '';
+  document.getElementById('lookerUrlInput').value = saved;
+  updateLookerFrame(saved);
+}
+
+function updateLookerFrame(url) {
+  const frame = document.getElementById('lookerFrame');
+  const empty = document.getElementById('lookerEmptyState');
+  const openBtn = document.getElementById('lookerOpenBtn');
+  if (url && url.length > 10) {
+    if (frame) { frame.src = url; frame.style.display = 'block'; }
+    if (empty) empty.style.display = 'none';
+    if (openBtn) { openBtn.href = url.replace('/embed/reporting/', '/reporting/'); openBtn.style.display = 'inline-flex'; }
+  } else {
+    if (frame) { frame.src = ''; frame.style.display = 'none'; }
+    if (empty) empty.style.display = 'block';
+    if (openBtn) openBtn.style.display = 'none';
+  }
+}
+
+// Auto-unlock if session exists
+if (sessionStorage.getItem('kpi_vault_auth') === 'unlocked') {
+  showDashboard();
+}
+</script>
+</body>
+</html>

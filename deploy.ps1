@@ -121,7 +121,7 @@ New-Item -ItemType Directory -Path $Stage -Force | Out-Null
 # The allow-list. Anything not named here does not ship.
 $Files = @('index.html', 'disclosure.html', '404.html', 'Animal-Crossing-Villager-Data-Reports.html', 'unsubscribe.html',
            'kpi-lab.html', 'kpi-lab.webmanifest', 'kpi-sw.js', 'feed.xml',
-           '_headers', '_redirects', 'robots.txt', 'llms.txt', 'sitemap.xml', 'site.webmanifest')
+           '_headers', '_redirects', 'robots.txt', 'llms.txt', 'sitemap.xml', 'site.webmanifest', 'telemetry-vault-demo.html', 'analytics-auth.json')
 $Dirs  = @('css', 'js', 'img', 'files', 'blog')
 
 foreach ($f in $Files) {

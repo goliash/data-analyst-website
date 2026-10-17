@@ -1,0 +1,6 @@
+{
+  "salt": "demo1234567890abcdef",
+  "hash": "c3e8db81d34d67d57c12bb44a8b9936a07c593f4709416f96796214fb466634d",
+  "algo": "SHA-256",
+  "description": "Demo password: demo-analytics-2026! Use python tools/set-analytics-password.py to update."
+}

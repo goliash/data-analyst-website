@@ -18,6 +18,7 @@ and hosted free on Cloudflare Pages.
 | Plain-English dictionary with word bubbles | in `index.html` and `js/main.js` |
 | Privacy and settings (motion, analytics switch), unsubscribe, 404 | `disclosure.html`, `unsubscribe.html`, `404.html` |
 | Contact form back end: Cloudflare Worker + Google Apps Script sheet log | `backend/contact-worker.js`, `backend/sheet-logger.gs` |
+| **Telemetry Vault**: Password-protected analytics & telemetry dashboard | `telemetry-vault-demo.html`, `analytics-auth.json` |
 | Security headers, redirects, search and AI-crawler files | `_headers`, `_redirects`, `robots.txt`, `sitemap.xml`, `llms.txt` |
 
 ## Run it locally
@@ -42,6 +43,7 @@ The contact form needs the Worker (below); everything else runs as is.
    `kpi-lab.html`.
 5. Optional: `python tools/get-villager-pictures.py` downloads the villager pictures (game art, not
    stored here). Without them each villager shows its initial.
+6. **Telemetry Vault Dashboard**: Rename `telemetry-vault-demo.html` to a private secret filename (e.g. `telemetry-vault-yourtoken.html`), update your password with `python tools/set-analytics-password.py`, and paste your Looker Studio report embed URL.
 
 ## Deploy
 
